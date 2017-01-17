@@ -11,8 +11,6 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
                                          password_confirmation: "bar" } }
     end
     assert_template 'users/new'
-    assert_select 'div#<CSS id for error explanation>'
-    assert_select 'div.<CSS class for field with error>'
   end
 
   test "valid signup information" do
@@ -22,8 +20,9 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
                                          email: "user@example.com",
                                          password:              "password",
                                          password_confirmation: "password" } }
-    end
+    	end
     follow_redirect!
     assert_template 'users/show'
   end
+
 end
