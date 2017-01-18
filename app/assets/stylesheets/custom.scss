@@ -217,5 +217,8 @@ input {
   bottom: 0;
 }
 
+/* Bootstrap override */
+
 .navbar-nav > li > a {padding-top:10px !important; padding-bottom:10px !important;}
+
 .navbar {min-height:40px !important}
