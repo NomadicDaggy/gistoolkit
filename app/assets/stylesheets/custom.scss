@@ -11,7 +11,7 @@ $gray-medium-light: #eaeaea;
 /* universal */
 
 body {
-  padding-top: 60px;
+  padding-top: 40px;
 }
 
 section {
@@ -72,10 +72,10 @@ p {
   color: white;
   text-transform: uppercase;
   letter-spacing: -1px;
-  padding-top: 9px;
+  padding-top: 4px;
   font-weight: bold;
   &:hover {
-    color: white;
+    color: grey;
     text-decoration: none;
   }
 }
@@ -213,6 +213,9 @@ input {
   width: 100%;
   position: absolute;
   left: 0;
-  top: 50px;
+  top: 40px;
   bottom: 0;
 }
+
+.navbar-nav > li > a {padding-top:10px !important; padding-bottom:10px !important;}
+.navbar {min-height:40px !important}
