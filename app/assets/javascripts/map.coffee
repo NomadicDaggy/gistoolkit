@@ -65,35 +65,35 @@ $ ->
 			return
 		).addTo map
 
-handleZipFile = (file) ->
-  reader = new FileReader
+	handleZipFile = (file) ->
+	  reader = new FileReader
 
-  reader.onload = ->
-    if reader.readyState != 2 or reader.error
-      return
-    else
-      convertToLayer reader.result
-    return
+	  reader.onload = ->
+	    if reader.readyState != 2 or reader.error
+	      return
+	    else
+	      convertToLayer reader.result
+	    return
 
-  reader.readAsArrayBuffer file
-  return
+	  reader.readAsArrayBuffer file
+	  return
 
-convertToLayer = (buffer) ->
-  shp(buffer).then (geojson) ->
-    layer = L.shapefile(geojson)
-    featureGroup.addLayer layer
-    return
-  return
+	convertToLayer = (buffer) ->
+	  shp(buffer).then (geojson) ->
+	    layer = L.shapefile(geojson)
+	    featureGroup.addLayer layer
+	    return
+	  return
 
-document.getElementById('submit').onclick = (e) ->
-  files = document.getElementById('file').files
-  if files.length == 0
-    return
-  file = files[0]
-  if file.name.slice(-3) != 'zip'
-    document.getElementById('warning').innerHTML = 'Select .zip file'
-    return
-  else
-    document.getElementById('warning').innerHTML = ''
-    handleZipFile file
-  return
+	document.getElementById('submit').onclick = (e) ->
+	  files = document.getElementById('file').files
+	  if files.length == 0
+	    return
+	  file = files[0]
+	  if file.name.slice(-3) != 'zip'
+	    document.getElementById('warning').innerHTML = 'Select .zip file'
+	    return
+	  else
+	    document.getElementById('warning').innerHTML = ''
+	    handleZipFile file
+	  return
