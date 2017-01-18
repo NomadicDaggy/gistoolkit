@@ -25,10 +25,4 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
     assert_select "title", "Contact | GIS toolkit"
   end
 
-  test "should get map" do
-    get map_path
-    assert_response :success
-    assert_select "title", "Map | GIS toolkit"
-  end
-
 end
