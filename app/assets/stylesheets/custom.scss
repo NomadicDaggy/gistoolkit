@@ -1,6 +1,9 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
+@import "font-awesome-sprockets";
+@import "font-awesome";
+
 /* mixins, variables, etc. */
 
 $gray-medium-light: #eaeaea;
@@ -202,4 +205,14 @@ input {
     padding: 10px 0;
     border-bottom: 1px solid $gray-lighter;
   }
+}
+
+/* map */
+
+#map {
+  width: 100%;
+    position: absolute;
+    left: 0;
+    top: 50px;
+  bottom: 0;
 }

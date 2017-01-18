@@ -12,6 +12,12 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require bootstrap
 //= require turbolinks
+//= require bootstrap
+//= require leaflet
+//= require leaflet.draw
+//= require leaflet-measure-path
+//= require shp
+//= require leaflet.shpfile
+//= require easy-button
 //= require_tree .
