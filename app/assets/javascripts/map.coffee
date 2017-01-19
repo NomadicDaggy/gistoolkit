@@ -67,14 +67,12 @@ $ ->
 
 	handleZipFile = (file) ->
 	  reader = new FileReader
-
 	  reader.onload = ->
 	    if reader.readyState != 2 or reader.error
 	      return
 	    else
 	      convertToLayer reader.result
 	    return
-
 	  reader.readAsArrayBuffer file
 	  return
 
