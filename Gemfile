@@ -15,6 +15,7 @@ gem 'will_paginate',            '3.1.0'
 gem 'bootstrap-will_paginate',  '0.0.10'
 gem 'leaflet-rails',			'1.0.2'
 gem 'font-awesome-sass', 		'~> 4.7.0'
+gem 'rename'
 
 group :development, :test do
   gem 'byebug',  '9.0.0', platform: :mri
