@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'account_activations/edit'
+
   root 'static_pages#home'
   get  '/map',     to: 'map#index'
   get  '/help',    to: 'static_pages#help'
