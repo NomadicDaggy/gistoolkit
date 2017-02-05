@@ -1,2 +1,10 @@
 <% provide(:title, "Map") %>
+
+<script>
+$(document).on('ready page:load', function(event) {
+  // apply non-idempotent transformations to the body
+  makeMap();
+});
+</script>
+
 <div id="map"></div>
