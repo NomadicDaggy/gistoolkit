@@ -5,3 +5,18 @@ input {
   margin-top:10px;
   width:auto !important;
 }
+
+#export {
+  position: absolute;
+  top:100px;
+  right:10px;
+  z-index:1000;
+  background:white;
+  color:black;
+  padding:6px;
+  border-radius:4px;
+  font-family: 'Helvetica Neue';
+  cursor: pointer;
+  font-size:12px;
+  text-decoration:none;
+}
