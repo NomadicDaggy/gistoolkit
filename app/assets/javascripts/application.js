@@ -19,4 +19,5 @@
 //= require shp
 //= require leaflet.shpfile
 //= require easy-button
+//= require leaflet.ajax
 //= require_tree .

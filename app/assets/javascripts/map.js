@@ -1,5 +1,5 @@
 function makeMap() {
-  var Stamen_Watercolor, baseMaps, drawControl, drawnItems, map, opencyclemap, osm, otm, overlayMaps, uploadPopup;
+  var Stamen_Watercolor, baseMaps, drawControl, drawnItems, map, opencyclemap, osm, otm, overlayMaps, geojsonLayer, file;
   map = L.map("map").setView([56.9558, 24.0991], 13);
 
   osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -60,6 +60,8 @@ function makeMap() {
     drawnItems.addLayer(e.layer);
   });
 
+  geojsonLayer = L.geoJSON().addTo(map);
+
   /*
     function getDrawnItems() {
       var json = drawnItems.toGeoJSON();
@@ -85,6 +87,15 @@ function makeMap() {
     // Create export
     document.getElementById('export').setAttribute('href', 'data:' + convertedData);
     document.getElementById('export').setAttribute('download','data.geojson');
+  }
+
+  document.getElementById('import').onclick = function(e) {
+    // Get file
+
+    // Convert back; unstringify
+    var data =
+    // Create import
+
   }
 };
 

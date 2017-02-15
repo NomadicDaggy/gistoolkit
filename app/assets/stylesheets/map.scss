@@ -6,7 +6,7 @@ input {
   width:auto !important;
 }
 
-#export {
+#export, #import {
   position: absolute;
   top:100px;
   right:10px;
@@ -19,4 +19,8 @@ input {
   cursor: pointer;
   font-size:12px;
   text-decoration:none;
+}
+
+#import {
+	top:140px;
 }
