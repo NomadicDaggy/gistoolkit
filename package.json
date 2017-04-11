@@ -1,0 +1,27 @@
+{
+  "name": "gistoolkit",
+  "version": "1.0.0",
+  "description": "To get started with the app, clone the repo and then install the needed gems:",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "leaflet-measure": "^2.1.7",
+    "modernizr": "3.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dagsagrinbergs/gistoolkit.git"
+  },
+  "author": "Daggy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dagsagrinbergs/gistoolkit/issues"
+  },
+  "homepage": "https://github.com/dagsagrinbergs/gistoolkit#readme"
+}

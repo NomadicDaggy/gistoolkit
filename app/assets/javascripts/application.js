@@ -16,7 +16,9 @@
 //= require leaflet
 //= require leaflet.draw
 //= require leaflet-measure-path
+//= require leaflet-measure
 //= require shp
 //= require leaflet.shpfile
 //= require easy-button
+//= require leaflet.geometryutil
 //= require_tree .
