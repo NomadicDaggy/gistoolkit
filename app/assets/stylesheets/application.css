@@ -12,7 +12,6 @@
  *
  *= require leaflet
  *= require leaflet.draw
- *= require leaflet-measure-path
  *= require easy-button
  *= requrie leaflet-measure
  *= require_tree .

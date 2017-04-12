@@ -15,7 +15,6 @@
 //= require bootstrap
 //= require leaflet
 //= require leaflet.draw
-//= require leaflet-measure-path
 //= require leaflet-measure
 //= require shp
 //= require leaflet.shpfile
