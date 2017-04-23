@@ -1,5 +1,5 @@
-function makeMap() {
-  var Stamen_Watercolor, baseMaps, drawControl, drawnItems, map, opencyclemap, osm, otm, overlayMaps, uploadPopup, measureControl;
+function makeMapCemeteries() {
+  var geojsonLayer, Stamen_Watercolor, baseMaps, drawControl, drawnItems, map, opencyclemap, osm, otm, overlayMaps, uploadPopup, measureControl;
 
   map = L.map("map").setView([56.9558, 24.0991], 13);
   //Window.map =  new L.Map('map');
@@ -28,13 +28,32 @@ function makeMap() {
     attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   });
 
+  geojsonLayer = new L.GeoJSON.AJAX("/cemeteries.json").addTo(map);
+/*  geojsonLayer = new L.geoJson();
+  geojsonLayer.addTo(map);
+
+  $.ajax({
+    dataType: "json",
+    url: "/cemeteries.json",
+    success: function(data) {
+        $(data.features).each(function(key, data) {
+            geojsonLayer.addData(data);
+        });
+    }
+    }).error(function() {}); */
+
+  //geojsonLayer.bindPopup(feature.properties.name);
+
   baseMaps = {
     "OpenStreetMap": osm,
     "OpenTopoMap": otm,
     "Stamen watercolor": Stamen_Watercolor,
     "No map": opencyclemap
   };
-  overlayMaps = null;
+  overlayMaps = {
+    "GeoJSON": geojsonLayer
+  };
+
   L.control.layers(baseMaps, overlayMaps).addTo(map);
 
   L.control.scale().addTo(map);
@@ -47,7 +66,8 @@ function makeMap() {
     secondaryAreaUnit: 'hectares'
   }).addTo(map);
 
-//var geojsonLayer = new L.GeoJSON.AJAX("/cemeteries.json").addTo(map);
+  //map.fitBounds(geojsonLayer.getBounds())
+  //L.geoJson("/cemeteries.json").addTo(map);
 
 /*
   drawControl = new L.Control.Draw({

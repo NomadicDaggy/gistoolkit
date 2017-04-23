@@ -18,6 +18,7 @@
 //= require leaflet-measure
 //= require shp
 //= require leaflet.shpfile
+//= require leaflet.ajax
 //= require easy-button
 //= require leaflet.geometryutil
 //= require_tree .
