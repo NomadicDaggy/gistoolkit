@@ -1,0 +1,11 @@
+<% provide(:title, "Cemeteries") %>
+<h1>All Cemeteries</h1>
+
+<%= will_paginate %>
+
+<ul class="cemeteries">
+  <%= render Cemetery.paginate(:page => params[:page], :per_page => 30).order('name') %>
+</ul>
+
+<%= will_paginate %>
+

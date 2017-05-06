@@ -41,11 +41,18 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+    annotate (2.6.5)
+      activerecord (>= 2.3.0)
+      rake (>= 0.8.7)
     ansi (1.5.0)
     arel (7.1.4)
     autoprefixer-rails (6.6.1)
       execjs
     bcrypt (3.1.11)
+    better_errors (2.1.1)
+      coderay (>= 1.0.0)
+      erubis (>= 2.6.6)
+      rack (>= 0.9.0)
     bootstrap-sass (3.3.6)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
@@ -53,6 +60,11 @@ GEM
       will_paginate
     builder (3.2.3)
     byebug (9.0.0)
+    callsite (0.0.11)
+    carrierwave (1.0.0)
+      activemodel (>= 4.0.0)
+      activesupport (>= 4.0.0)
+      mime-types (>= 1.16)
     coderay (1.1.1)
     coffee-rails (4.2.1)
       coffee-script (>= 2.2.0)
@@ -107,6 +119,10 @@ GEM
     lumberjack (1.0.11)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
+    meta_request (0.4.0)
+      callsite (~> 0.0, >= 0.0.11)
+      rack-contrib (~> 1.1)
+      railties (>= 3.0.0, < 5.1.0)
     method_source (0.8.2)
     mime-types (3.1)
       mime-types-data (~> 3.2015)
@@ -131,8 +147,13 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-rails (0.3.6)
+      pry (>= 0.10.4)
     puma (3.4.0)
     rack (2.0.1)
+    rack-contrib (1.2.0)
+      rack (>= 0.9.1)
+    rack-cors (0.4.1)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (5.0.1)
@@ -172,6 +193,8 @@ GEM
     rgeo-activerecord (5.0.1)
       activerecord (~> 5.0.0)
       rgeo (~> 0.3)
+    rgeo-geojson (0.4.3)
+      rgeo (~> 0.5)
     ruby-progressbar (1.8.1)
     sass (3.4.23)
     sass-rails (5.0.6)
@@ -214,10 +237,13 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord-postgis-adapter
+  annotate
   bcrypt (= 3.1.11)
+  better_errors
   bootstrap-sass (= 3.3.6)
   bootstrap-will_paginate (= 0.0.10)
   byebug (= 9.0.0)
+  carrierwave
   coffee-rails (= 4.2.1)
   dotenv-rails
   faker (= 1.6.6)
@@ -228,12 +254,17 @@ DEPENDENCIES
   jquery-rails (= 4.1.1)
   leaflet-rails (= 1.0.2)
   listen (= 3.0.8)
+  meta_request
   minitest-reporters (= 1.1.9)
   pg (= 0.18.4)
+  pry-rails
   puma (= 3.4.0)
+  rack-cors
   rails (= 5.0.1)
   rails-controller-testing (= 0.1.1)
   rename
+  rgeo
+  rgeo-geojson
   sass-rails (= 5.0.6)
   spring (= 1.7.2)
   spring-watcher-listen (= 2.0.0)
@@ -243,4 +274,4 @@ DEPENDENCIES
   will_paginate (= 3.1.0)
 
 BUNDLED WITH
-   1.13.7
+   1.14.5

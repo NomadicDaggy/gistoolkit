@@ -1,3 +1,20 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  id                :integer          not null, primary key
+#  name              :string
+#  email             :string
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  password_digest   :string
+#  remember_digest   :string
+#  admin             :boolean          default("false")
+#  activation_digest :string
+#  activated         :boolean          default("false")
+#  activated_at      :datetime
+#
+
 class User < ApplicationRecord
   attr_accessor :remember_token, :activation_token
 	before_save   :downcase_email

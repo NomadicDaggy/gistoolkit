@@ -17,6 +17,10 @@ gem 'leaflet-rails',					'1.0.2'
 gem 'font-awesome-sass', 			'~> 4.7.0'
 gem 'rename'
 gem 'activerecord-postgis-adapter'
+gem 'rgeo'
+gem 'rgeo-geojson'
+gem 'rack-cors'
+gem 'carrierwave'
 
 group :development, :test do
   gem 'byebug',  '9.0.0', platform: :mri
@@ -28,6 +32,10 @@ group :development do
   gem 'listen',                 '3.0.8'
   gem 'spring',                 '1.7.2'
   gem 'spring-watcher-listen',  '2.0.0'
+  gem 'annotate'
+  gem 'meta_request'
+  gem 'better_errors'
+  gem 'pry-rails'
 end
 
 group :test do

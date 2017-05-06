@@ -7,8 +7,9 @@ input {
 }
 
 #export, #import {
+  float: right;
   position: absolute;
-  top:100px;
+  top:170px;
   right:10px;
   z-index:1000;
   background:white;
@@ -22,5 +23,5 @@ input {
 }
 
 #import {
-  top:135px;
+  top:210px;
 }

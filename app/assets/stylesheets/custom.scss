@@ -222,6 +222,18 @@ input {
   bottom: 0;
 }
 
+.icon {
+  max-width: 70%;
+  max-height: 70%;
+  margin: 4px;
+}
+
+/* cemeteries */
+
+.dagger {
+  font-size: 1.3em;
+}
+
 /* Bootstrap override */
 
 .navbar-nav > li > a {padding-top:10px !important; padding-bottom:10px !important;}
