@@ -137,7 +137,8 @@ function makeMap() {
     fitBounds: true,
     formats: [
           '.geojson',
-          '.kml'
+          '.kml',
+          '.json'
       ],
     layerOptions: {
       style: plotStyle,
