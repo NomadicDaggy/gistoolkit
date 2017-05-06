@@ -1,8 +1,9 @@
 Rails.application.routes.draw do
+  resources :items
   root 'map#index'
-#  get  'cemeteries/:id',   to: 'cemeteries#show'
 #  get  '/cemeteries.json', to: 'cemeteries#show'
-  get  '/cemeteries/map_data', :defaults => { :format => 'json' }
+  get  '/cemeteries/cemetery_data', :defaults => { :format => 'json' }
+  get  '/cemeteries/plots_data', :defaults => { :format => 'json' }
   get  '/cemeteries/list', to: 'cemeteries#list'
   get  '/home',       to: 'static_pages#home'
   get  '/help',       to: 'static_pages#help'

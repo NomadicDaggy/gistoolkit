@@ -1,31 +1,22 @@
 class CemeteriesController < ApplicationController
 
   def index
-    @cemeteries = Cemetery.all
-
-    respond_to do |format|
-      format.json do
-        feature_collection = Cemetery.to_feature_collection @cemeteries
-        render json: RGeo::GeoJSON.encode(feature_collection)
-      end
-
-      format.html
-    end
+    @cemeteries = Cemetery.paginate(page: params[:page])
   end
 
-  def map_data
+  def cemetery_data
     @cemeteries = Cemetery.choose($cem_id)
+  end
+
+  def plots_data
+    @plots = Plot.choose($cem_id)
   end
 
   def show
 #    @cemeteries = Cemetery.find(params[:id])
 #    data = Cemetery.choose(params[:id])
 #    render :json => data
-  $cem_id = params[:id]
-  end
-
-  def list
-    @cemeteries = Cemetery.paginate(page: params[:page])
+    $cem_id = params[:id]
   end
 
 end

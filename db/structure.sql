@@ -67,7 +67,7 @@ CREATE TABLE ar_internal_metadata (
 CREATE TABLE cemeteries (
     id integer NOT NULL,
     account_id integer NOT NULL,
-    geom geometry(Polygon,3857),
+    geom geometry(Polygon,4326),
     label character varying DEFAULT ''::character varying NOT NULL,
     name character varying,
     created_at timestamp without time zone,
@@ -115,6 +115,39 @@ CREATE SEQUENCE cemeteries_id_seq
 --
 
 ALTER SEQUENCE cemeteries_id_seq OWNED BY cemeteries.id;
+
+
+--
+-- Name: plots; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE plots (
+    id integer NOT NULL,
+    cemetery_id integer NOT NULL,
+    geom geometry(Polygon,4326),
+    label character varying DEFAULT ''::character varying NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: plots_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE plots_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: plots_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE plots_id_seq OWNED BY plots.id;
 
 
 --
@@ -172,6 +205,13 @@ ALTER TABLE ONLY cemeteries ALTER COLUMN id SET DEFAULT nextval('cemeteries_id_s
 
 
 --
+-- Name: plots id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY plots ALTER COLUMN id SET DEFAULT nextval('plots_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -195,6 +235,14 @@ ALTER TABLE ONLY cemeteries
 
 
 --
+-- Name: plots plots_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY plots
+    ADD CONSTRAINT plots_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -208,6 +256,34 @@ ALTER TABLE ONLY schema_migrations
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: index_cemeteries_on_account_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_cemeteries_on_account_id ON cemeteries USING btree (account_id);
+
+
+--
+-- Name: index_cemeteries_on_geom; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_cemeteries_on_geom ON cemeteries USING gist (geom);
+
+
+--
+-- Name: index_plots_on_cemetery_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_plots_on_cemetery_id ON plots USING btree (cemetery_id);
+
+
+--
+-- Name: index_plots_on_geom; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_plots_on_geom ON plots USING gist (geom);
 
 
 --
@@ -230,6 +306,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170117161409'),
 ('20170118114822'),
 ('20170121154431'),
-('20170417102121');
+('20170417102121'),
+('20170426164547');
 
 
