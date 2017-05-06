@@ -5,65 +5,42 @@
   <a href='#' id='import'>Import Features</a> -->
 
   <script>
-  var geojsonLayer = new L.GeoJSON.AJAX("/cemeteries/map_data");
+
 
   $(document).on('ready page:load', function(event) {
-    var Stamen_Watercolor, baseMaps, drawControl, drawnItems, map, opencyclemap, osm, otm, overlayMaps, uploadPopup, measureControl;
+    var cemeteriesLayer, Stamen_Watercolor, baseMaps, drawControl, drawnItems, map, opencyclemap, osm, otm, overlayMaps, uploadPopup, measureControl;
 
     map = L.map("map").setView([56.9558, 24.0991], 13);
     //Window.map =  new L.Map('map');
     //map = L.map("map").setView([56.9558, 24.0991], 13);
 
+    map.options.maxZoom = 24;
+
     osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18
+      maxNativeZoom: 18,
+      maxZoom: 24
     }, {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
     otm = L.tileLayer('http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-      maxZoom: 17,
+      maxNativeZoom: 17,
+      maxZoom: 24,
       attribution: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
     });
 
     Stamen_Watercolor = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
       attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      minZoom: 1,
-      maxZoom: 16,
+      maxNativeZoom: 16,
+      maxZoom: 24,
       ext: 'png'
     });
 
     opencyclemap = L.tileLayer('http://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey={apikey}', {
-      maxZoom: 16,
+      maxNativeZoom: 16,
+      maxZoom: 24,
       attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
-
-    geojsonLayer.addTo(map);
-  /*  geojsonLayer = new L.geoJson();
-    geojsonLayer.addTo(map);
-
-    $.ajax({
-      dataType: "json",
-      url: "/cemeteries.json",
-      success: function(data) {
-          $(data.features).each(function(key, data) {
-              geojsonLayer.addData(data);
-          });
-      }
-      }).error(function() {}); */
-
-    //geojsonLayer.bindPopup(feature.properties.name);
-
-    baseMaps = {
-      "OpenStreetMap": osm,
-      "OpenTopoMap": otm,
-      "Stamen watercolor": Stamen_Watercolor,
-      "No map": opencyclemap
-    };
-    overlayMaps = {
-      "GeoJSON": geojsonLayer
-    };
-
-    L.control.layers(baseMaps, overlayMaps).addTo(map);
 
     L.control.scale().addTo(map);
 
@@ -75,6 +52,127 @@
       secondaryAreaUnit: 'hectares'
     }).addTo(map);
 
+    //    geojsonLayer = new L.GeoJSON.AJAX("/cemeteries/map_data").addTo(map);
+    /*
+    var geojsonFeature = (function() {
+            var json = null;
+            $.ajax({
+                'url': "/cemeteries/cemetery_data",
+                'dataType': "json",
+                'success': function (data) {
+                    json = data;
+                }
+            });
+            return json;
+        })();
+    */
+    var cemeteryStyle = {
+        "fillColor": "#6c9b6b",
+        "color": "black",
+        "weight": 1,
+        "fillOpacity": 1
+    };
+
+    cemeteriesLayer = new L.GeoJSON.AJAX("/cemeteries/cemetery_data",{
+      style: cemeteryStyle
+    }).addTo(map);
+
+/*  cemeteriesLayer = new L.GeoJSON.AJAX();
+  cemeteriesLayer.addUrl("/cemeteries/cemetery_data");
+  cemeteriesLayer.refresh()
+*/
+    var plotStyle = {
+      "weight":1,
+      "fillColor" :'#704827',
+      "color":'black',
+      "fillOpacity":1
+    };
+
+    plotsLayer = new L.GeoJSON.AJAX("/cemeteries/plots_data",{
+      style: plotStyle,
+      onEachFeature: function (feature, layer) {
+        layer.bindPopup(feature.properties.label);
+      },
+    });
+
+    map.on('zoomend', function() {
+      if (map.getZoom() <19){
+        if (map.hasLayer(plotsLayer)) {
+          map.removeLayer(plotsLayer);
+        } else {
+          console.log("no plots layer active");
+        }
+      }
+      if (map.getZoom() >= 19){
+        if (map.hasLayer(plotsLayer)){
+          console.log("layer already added");
+        } else {
+          map.addLayer(plotsLayer);
+        }
+      }
+    });
+
+    /*
+        cemeteriesLayer = new L.geoJson();
+        cemeteriesLayer.addTo(map);
+
+        $.ajax({
+          dataType: "json",
+          url: "/cemeteries/cemetery_data",
+          success: function(data) {
+              $(data.features).each(function(key, data) {
+                  cemeteriesLayer.setStyle({weight:1, color:'#6c9b6b', fillOpacity:1});
+                  cemeteriesLayer.bindPopup( "<strong>" + data.properties.name + "</strong><br/>" );
+                  cemeteriesLayer.addData(data);
+              });
+          }
+          }).error(function() {});
+    */
+        //geojsonLayer.bindPopup(feature.properties.name);
+    /*
+        plotsLayer = new L.geoJson();
+        plotsLayer.addTo(map);
+
+        $.ajax({
+          dataType: "json",
+          url: "/cemeteries/plots_data",
+          success: function(data) {
+              $(data.features).each(function(key, data) {
+                  plotsLayer.setStyle({weight:1, fillColor :'#704827', color:'black', fillOpacity:1});
+                  plotsLayer.bindPopup( "<strong>" + data.properties.label + "</strong><br/>" );
+                  plotsLayer.addData(data);
+              });
+          }
+          }).error(function() {});
+
+    */
+
+    map.setView([<%= Cemetery.find(params[:id]).central_coordinates[:lat] %>,<%= Cemetery.find(params[:id]).central_coordinates[:lng] %>], 16);
+
+    L.easyButton('fa-crosshairs', function(btn, map){
+      map.setView([<%= Cemetery.find(params[:id]).central_coordinates[:lat] %>,<%= Cemetery.find(params[:id]).central_coordinates[:lng] %>], 16)
+    }).addTo(map);
+
+    L.easyButton('<span class="dagger">&dagger;</span>', function(btn, map){
+      map.setZoom(19)
+    }).addTo(map);
+
+    baseMaps = {
+      "OpenStreetMap": osm,
+      "OpenTopoMap": otm,
+      "Stamen watercolor": Stamen_Watercolor,
+      "No map": opencyclemap
+    };
+    overlayMaps = {
+      "Cemetery": cemeteriesLayer,
+      "Plots": plotsLayer
+    };
+
+    L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+    map.on('data:loading', function() {
+      map.spin(true);
+    });
   });
   </script>
 </body>

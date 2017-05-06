@@ -19,6 +19,10 @@
 //= require shp
 //= require leaflet.shpfile
 //= require leaflet.ajax
+//= require spin
+//= require leaflet.spin
 //= require easy-button
 //= require leaflet.geometryutil
+//= require togeojson
+//= require leaflet.filelayer
 //= require_tree .

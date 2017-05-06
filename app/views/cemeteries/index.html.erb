@@ -1,18 +1,11 @@
-<% provide(:title, "Map") %>
+<% provide(:title, "Cemeteries") %>
+<h1>All Cemeteries</h1>
 
-<body>
-<!--  <a href='#' id='export'>Export Features</a>
-  <a href='#' id='import'>Import Features</a> -->
+<%= will_paginate %>
 
-  <script>
-  $(document).on('ready page:load', function(event) {
-    // apply non-idempotent transformations to the body
+<ul class="cemeteries">
+  <%= render Cemetery.paginate(:page => params[:page], :per_page => 30).order('name') %>
+</ul>
 
-    makeMapCemeteries();
-    //var geojsonLayer = new L.GeoJSON.AJAX("/cemeteries.json").addTo(map);
-  });
-  </script>
-</body>
+<%= will_paginate %>
 
-<!-- A map will magically appear here -->
-<div id="map"></div>

@@ -37,6 +37,8 @@
 class Cemetery < ActiveRecord::Base
   include Featurable
 
+  has_many :plots
+
   featurable :geom, [:name]
 
   def self.choose(cemetery_id)

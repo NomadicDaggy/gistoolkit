@@ -20,6 +20,7 @@ gem 'activerecord-postgis-adapter'
 gem 'rgeo'
 gem 'rgeo-geojson'
 gem 'rack-cors'
+gem 'carrierwave'
 
 group :development, :test do
   gem 'byebug',  '9.0.0', platform: :mri
@@ -32,6 +33,9 @@ group :development do
   gem 'spring',                 '1.7.2'
   gem 'spring-watcher-listen',  '2.0.0'
   gem 'annotate'
+  gem 'meta_request'
+  gem 'better_errors'
+  gem 'pry-rails'
 end
 
 group :test do
