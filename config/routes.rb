@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :items
   root 'map#index'
 #  get  '/cemeteries.json', to: 'cemeteries#show'
   get  '/cemeteries/cemetery_data', :defaults => { :format => 'json' }
@@ -16,5 +15,6 @@ Rails.application.routes.draw do
   resources :cemeteries, only: [:index, :show]
   resources :users
   resources :account_activations, only: [:edit]
+  resources :password_resets, only: [:new, :create, :edit, :update]
   match '*path', via: [:options], to:  lambda {|_| [204, {'Access-Control-Allow-Headers' => "Origin, Content-Type, Accept, Authorization, Token", 'Access-Control-Allow-Origin' => "*", 'Content-Type' => 'text/plain'}, []]}
 end
