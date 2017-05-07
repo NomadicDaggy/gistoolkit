@@ -1,13 +1,9 @@
 // Place all the styles related to the map controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-input {
-  margin-top:10px;
-  width:auto !important;
-}
 
-#export, #import {
-  float: right;
+#export {
+//  float: right;
   position: absolute;
   top:170px;
   right:10px;
@@ -20,8 +16,4 @@ input {
   cursor: pointer;
   font-size:12px;
   text-decoration:none;
-}
-
-#import {
-  top:210px;
 }
