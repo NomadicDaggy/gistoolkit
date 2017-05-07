@@ -174,7 +174,9 @@ CREATE TABLE users (
     admin boolean DEFAULT false,
     activation_digest character varying,
     activated boolean DEFAULT false,
-    activated_at timestamp without time zone
+    activated_at timestamp without time zone,
+    reset_digest character varying,
+    reset_sent_at timestamp without time zone
 );
 
 
@@ -307,6 +309,7 @@ INSERT INTO schema_migrations (version) VALUES
 ('20170118114822'),
 ('20170121154431'),
 ('20170417102121'),
-('20170426164547');
+('20170426164547'),
+('20170507120407');
 
 
