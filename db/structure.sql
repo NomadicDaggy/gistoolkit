@@ -172,9 +172,6 @@ CREATE TABLE users (
     password_digest character varying,
     remember_digest character varying,
     admin boolean DEFAULT false,
-    activation_digest character varying,
-    activated boolean DEFAULT false,
-    activated_at timestamp without time zone,
     reset_digest character varying,
     reset_sent_at timestamp without time zone
 );

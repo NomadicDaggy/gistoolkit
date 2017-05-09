@@ -10,9 +10,6 @@
 #  password_digest   :string
 #  remember_digest   :string
 #  admin             :boolean          default("false")
-#  activation_digest :string
-#  activated         :boolean          default("false")
-#  activated_at      :datetime
 #  reset_digest      :string
 #  reset_sent_at     :datetime
 #
