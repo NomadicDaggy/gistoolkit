@@ -3,8 +3,8 @@ require 'test_helper'
 class UsersIndexTest < ActionDispatch::IntegrationTest
 
   def setup
-    @admin     = users(:michael)
-    @non_admin = users(:archer)
+    @admin     = users(:dags)
+    @non_admin = users(:orange)
   end
 
   test "index as admin including pagination and delete links" do

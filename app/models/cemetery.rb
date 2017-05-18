@@ -2,36 +2,16 @@
 #
 # Table name: cemeteries
 #
-#  id                     :integer          not null, primary key
-#  account_id             :integer          not null
-#  geom                   :geometry({:srid= polygon, 4326
-#  label                  :string           default(""), not null
-#  name                   :string
-#  created_at             :datetime
-#  updated_at             :datetime
-#  settings               :text
-#  contract_template_id   :integer
-#  bill_template_id       :integer
-#  email                  :string
-#  address                :string
-#  phone_number           :string
-#  web_address            :string
-#  published_in_web       :boolean          default("false")
-#  digitized              :boolean          default("false")
-#  description            :text
-#  supporter_info         :string
-#  intention              :string
-#  status                 :string
-#  cultural_monument      :boolean          default("false")
-#  visit_time_h_from      :string
-#  visit_time_h_to        :string
-#  country_domain         :string
-#  city                   :string
-#  region                 :string
-#  unrecognizable_options :boolean          default("false")
-#  geo_ratio              :decimal(20, 16)
-#  full_text              :text
-#  file                   :string
+#  id           :integer          not null, primary key
+#  geom         :geometry({:srid= polygon, 4326
+#  name         :string
+#  created_at   :datetime
+#  updated_at   :datetime
+#  address      :string
+#  phone_number :string
+#  city         :string
+#  region       :string
+#  geo_ratio    :decimal(20, 16)
 #
 
 class Cemetery < ActiveRecord::Base

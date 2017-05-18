@@ -14,10 +14,8 @@ class CemeteriesController < ApplicationController
   end
 
   def show
-#    @cemeteries = Cemetery.find(params[:id])
-#    data = Cemetery.choose(params[:id])
-#    render :json => data
     $cem_id = params[:id]
+    @cemetery = Cemetery.find(params[:id])
   end
 
   private
@@ -25,7 +23,8 @@ class CemeteriesController < ApplicationController
     # Confirms an admin user.
     def admin_user
       unless admin?
-        redirect_to(root_url)
+        flash[:danger] = "Please log in."
+        redirect_to(login_url)
       end
     end
 end

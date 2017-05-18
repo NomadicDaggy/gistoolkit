@@ -142,9 +142,11 @@ function fileControls() {
     // Find out desired filename
     var filename = prompt("Filename for exported geodata: ");
 
-    // Create export
-    document.getElementById('export').setAttribute('href', 'data:' + convertedData);
-    document.getElementById('export').setAttribute('download', filename + '.geojson');
+    if (filename) {
+      // Create export
+      document.getElementById('export').setAttribute('href', 'data:' + convertedData);
+      document.getElementById('export').setAttribute('download', filename + '.geojson');
+    }
   }
 
   var fileLayerStyle = {

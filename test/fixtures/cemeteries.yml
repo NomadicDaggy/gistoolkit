@@ -1,0 +1,23 @@
+# == Schema Information
+#
+# Table name: cemeteries
+#
+#  id           :integer          not null, primary key
+#  geom         :geometry({:srid= polygon, 4326
+#  name         :string
+#  created_at   :datetime
+#  updated_at   :datetime
+#  address      :string
+#  phone_number :string
+#  city         :string
+#  region       :string
+#  geo_ratio    :decimal(20, 16)
+#
+
+test_cemetery:
+  geom: 0103000020E6100000010000000B00000097D50E61DF74374013DB7964075A4C40E2A481AA20753740A62DC694055A4C407A6446E3117537404485882EFC594C40D898851D187537407582562CF4594C40F292596D057537406C5DA17BD5594C4013F3EEB8D6743740FA368392D8594C40BE62A24DB5743740ED192B67DC594C403B931FA9C57437400122362DEE594C40F125BB7ED9743740D41F20CCFF594C4091B77C64DE743740C011761E065A4C4097D50E61DF74374013DB7964075A4C40
+  name: test cemetery
+  phone_number: 63083412
+  city: null
+  region: null
+  geo_ratio: 1.8198377214770658

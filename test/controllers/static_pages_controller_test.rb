@@ -1,12 +1,6 @@
 require 'test_helper'
 
 class StaticPagesControllerTest < ActionDispatch::IntegrationTest
-  test "should get map" do
-    get root_path
-    assert_response :success
-    assert_select "title", "Map | GIS toolkit"
-  end
-
   test "should get home" do
     get home_path
     assert_response :success
@@ -30,11 +24,4 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "title", "Contact | GIS toolkit"
   end
-
-  test "should get cemeteries" do
-    get cemeteries_path
-    assert_response :success
-    assert_select "title", "Cemeteries | GIS toolkit"
-  end
-
 end

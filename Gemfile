@@ -21,10 +21,12 @@ gem 'rgeo'
 gem 'rgeo-geojson'
 gem 'rack-cors'
 gem 'carrierwave'
+gem 'rspec'
 
 group :development, :test do
   gem 'byebug',  '9.0.0', platform: :mri
   gem 'dotenv-rails'
+  gem 'minitest_to_rspec'
 end
 
 group :development do
