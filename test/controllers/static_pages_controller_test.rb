@@ -19,16 +19,22 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
     assert_select "title", "Help | GIS toolkit"
   end
 
-	test "should get about" do
-		get about_path
+	test "should get info" do
+		get info_path
 		assert_response :success
-		assert_select "title", "About | GIS toolkit"
+		assert_select "title", "Info | GIS toolkit"
 	end
 
   test "should get contact" do
     get contact_path
     assert_response :success
     assert_select "title", "Contact | GIS toolkit"
+  end
+
+  test "should get cemeteries" do
+    get cemeteries_path
+    assert_response :success
+    assert_select "title", "Cemeteries | GIS toolkit"
   end
 
 end
