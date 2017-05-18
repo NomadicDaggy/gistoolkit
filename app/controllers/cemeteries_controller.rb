@@ -1,4 +1,5 @@
 class CemeteriesController < ApplicationController
+  before_action :admin_user, only: [:index, :show]
 
   def index
     @cemeteries = Cemetery.paginate(page: params[:page])
@@ -19,4 +20,12 @@ class CemeteriesController < ApplicationController
     $cem_id = params[:id]
   end
 
+  private
+
+    # Confirms an admin user.
+    def admin_user
+      unless admin?
+        redirect_to(root_url)
+      end
+    end
 end
