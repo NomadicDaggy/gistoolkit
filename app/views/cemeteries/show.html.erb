@@ -5,14 +5,10 @@
   <a href='#' id='import'>Import Features</a> -->
 
   <script>
-
-
   $(document).on('ready page:load', function(event) {
     var cemeteriesLayer, Stamen_Watercolor, baseMaps, drawControl, drawnItems, map, opencyclemap, osm, otm, overlayMaps, uploadPopup, measureControl;
 
     map = L.map("map").setView([56.9558, 24.0991], 13);
-    //Window.map =  new L.Map('map');
-    //map = L.map("map").setView([56.9558, 24.0991], 13);
 
     map.options.maxZoom = 24;
 
@@ -52,20 +48,6 @@
       secondaryAreaUnit: 'hectares'
     }).addTo(map);
 
-    //    geojsonLayer = new L.GeoJSON.AJAX("/cemeteries/map_data").addTo(map);
-    /*
-    var geojsonFeature = (function() {
-            var json = null;
-            $.ajax({
-                'url': "/cemeteries/cemetery_data",
-                'dataType': "json",
-                'success': function (data) {
-                    json = data;
-                }
-            });
-            return json;
-        })();
-    */
     var cemeteryStyle = {
         "fillColor": "#6c9b6b",
         "color": "black",
@@ -77,10 +59,6 @@
       style: cemeteryStyle
     }).addTo(map);
 
-/*  cemeteriesLayer = new L.GeoJSON.AJAX();
-  cemeteriesLayer.addUrl("/cemeteries/cemetery_data");
-  cemeteriesLayer.refresh()
-*/
     var plotStyle = {
       "weight":1,
       "fillColor" :'#704827',
@@ -111,41 +89,6 @@
         }
       }
     });
-
-    /*
-        cemeteriesLayer = new L.geoJson();
-        cemeteriesLayer.addTo(map);
-
-        $.ajax({
-          dataType: "json",
-          url: "/cemeteries/cemetery_data",
-          success: function(data) {
-              $(data.features).each(function(key, data) {
-                  cemeteriesLayer.setStyle({weight:1, color:'#6c9b6b', fillOpacity:1});
-                  cemeteriesLayer.bindPopup( "<strong>" + data.properties.name + "</strong><br/>" );
-                  cemeteriesLayer.addData(data);
-              });
-          }
-          }).error(function() {});
-    */
-        //geojsonLayer.bindPopup(feature.properties.name);
-    /*
-        plotsLayer = new L.geoJson();
-        plotsLayer.addTo(map);
-
-        $.ajax({
-          dataType: "json",
-          url: "/cemeteries/plots_data",
-          success: function(data) {
-              $(data.features).each(function(key, data) {
-                  plotsLayer.setStyle({weight:1, fillColor :'#704827', color:'black', fillOpacity:1});
-                  plotsLayer.bindPopup( "<strong>" + data.properties.label + "</strong><br/>" );
-                  plotsLayer.addData(data);
-              });
-          }
-          }).error(function() {});
-
-    */
 
     map.setView([<%= Cemetery.find(params[:id]).central_coordinates[:lat] %>,<%= Cemetery.find(params[:id]).central_coordinates[:lng] %>], 16);
 

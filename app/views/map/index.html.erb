@@ -1,11 +1,16 @@
 <% provide(:title, "Map") %>
 
 <body>
-  <li><a id="export" href="#">Export</a></li>
+  <% if logged_in? %>
+    <li><a id="export" href="#">Export</a></li>
+  <% end %>
 	<script>
 	$(document).on('ready page:load', function(event) {
 	  // apply non-idempotent transformations to the body
-	  makeMap();
+	  initMap();
+    <% if logged_in? %>
+      fileControls();
+    <% end %>
 	});
 	</script>
 </body>

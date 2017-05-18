@@ -1,5 +1,8 @@
-function makeMap() {
-  var Stamen_Watercolor, baseMaps, drawControl, drawnItems, map, opencyclemap, osm, otm, overlayMaps, uploadPopup, measureControl;
+// Global variables
+var map, drawControl, drawnItems;
+
+function initMap() {
+  var Stamen_Watercolor, baseMaps, opencyclemap, osm, otm, overlayMaps, uploadPopup, measureControl;
 
   map = L.map("map").setView([56.9558, 24.0991], 13);
 
@@ -50,7 +53,6 @@ function makeMap() {
     secondaryAreaUnit: 'hectares'
   }).addTo(map);
 
-//var geojsonLayer = new L.GeoJSON.AJAX("/cemeteries.json").addTo(map);
   drawControl = new L.Control.Draw({
     edit: {
       featureGroup: drawnItems
@@ -72,84 +74,6 @@ function makeMap() {
   map.on('draw:created', function(e) {
     drawnItems.addLayer(e.layer);
   });
-
-  /*
-    uploadPopup = L.popup().setContent('<label for="input">Select a zipped shapefile:</label> <input type="file" id="file"> <br> <input type="submit" id="submit"> <span id="warning"  style="color:red"></span>');
-
-    return L.easyButton('fa fa-upload', function(btn, map) {
-      uploadPopup.setLatLng(map.getCenter()).openOn(map);
-    }).addTo(map);
-  */
-
-  document.getElementById('export').onclick = function(e) {
-    // Extract GeoJson from featureGroup
-    var data = drawnItems.toGeoJSON();
-
-    // Stringify the GeoJson
-    var convertedData = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
-
-    var filename = prompt("Filename for exported geodata: ");
-
-    // Create export
-    document.getElementById('export').setAttribute('href', 'data:' + convertedData);
-    document.getElementById('export').setAttribute('download', filename + '.geojson');
-  }
-
- /* document.getElementById('input').onclick = function(e) {
-    if (window.File && window.FileReader && window.FileList && window.Blob) {
-      // Great success! All the File APIs are supported.
-    } else {
-      alert('The File APIs are not fully supported in this browser.');
-    }
-
-    //var selectedFile = document.getElementById('input').files[0];
-    //var geojsonLayer = new L.GeoJSON.AJAX(selectedFile);
-    //geojsonLayer.addTo(map);
-/*
-    var openFile = function(event) {
-      var input = event.target;
-
-      var reader = new FileReader();
-      reader.onload = function(){
-        var dataURL = reader.result;
-      };
-      reader.readAsDataURL(input.files[0]);
-    };
-*/
-    // get url of .geojson file
-    //var url = prompt("Please enter the URL of the .geojson file");
-    //alert(url);
-    //<input type="file" id="input">
-    //var geojsonLayer = new L.GeoJSON.AJAX(url);
-    //geojsonLayer.addTo(map);
-    //var geolayer = L.geoJson(url).addTo(map);
-    //var geojsonLayer = new L.GeoJSON.AJAX("data.geojson").addTo(map);
-//  }
-  var plotStyle = {
-    "weight":1,
-    "fillColor" :'#704827',
-    "color":'black',
-    "fillOpacity":1
-  };
-
-  L.Control.FileLayerLoad.LABEL = '<img class="icon" src="folder.svg" alt="file icon"/>';
-  L.Control.fileLayerLoad({
-    fitBounds: true,
-    formats: [
-          '.geojson',
-          '.kml',
-          '.json'
-      ],
-    layerOptions: {
-      style: plotStyle,
-      pointToLayer: function (data, latlng) {
-        return L.circleMarker(
-        latlng,
-        { style: plotStyle }
-        );
-      }
-    }
-  }).addTo(map);
 
   // Truncate value based on number of decimals
   var _round = function(num, len) {
@@ -205,49 +129,47 @@ function makeMap() {
           }
       });
   });
-};
+}
 
-window.onload = function() {
-  var convertToLayer, handleZipFile;
-  handleZipFile = function(file) {
-    var reader;
-    reader = new FileReader;
-    reader.onload = function() {
-      if (reader.readyState !== 2 || reader.error) {
-        return;
-      } else {
-        convertToLayer(reader.result);
-      }
-    };
-    reader.readAsArrayBuffer(file);
+function fileControls() {
+  document.getElementById('export').onclick = function(e) {
+    // Extract GeoJson from featureGroup
+    var data = drawnItems.toGeoJSON();
+
+    // Stringify the GeoJson
+    var convertedData = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+
+    // Find out desired filename
+    var filename = prompt("Filename for exported geodata: ");
+
+    // Create export
+    document.getElementById('export').setAttribute('href', 'data:' + convertedData);
+    document.getElementById('export').setAttribute('download', filename + '.geojson');
+  }
+
+  var fileLayerStyle = {
+    "weight":1,
+    "fillColor" :'#704827',
+    "color":'black',
+    "fillOpacity":1
   };
-  convertToLayer = function(buffer) {
-    shp(buffer).then(function(geojson) {
-      var layer;
-      layer = L.shapefile(geojson);
-      featureGroup.addLayer(layer);
-    });
-  };
-  $(document).ready(function() {
-    $("#submit").click(function() {
-      var file, files;
-      files = document.getElementById('file').files;
-      if (files.length === 0) {
-        return;
+
+  L.Control.FileLayerLoad.LABEL = '<img class="icon" src="folder.svg" alt="file icon"/>';
+  L.Control.fileLayerLoad({
+    fitBounds: true,
+    formats: [
+          '.geojson',
+          '.kml',
+          '.json'
+      ],
+    layerOptions: {
+      style: fileLayerStyle,
+      pointToLayer: function (data, latlng) {
+        return L.circleMarker(
+        latlng,
+        { style: fileLayerStyle }
+        );
       }
-      file = files[0];
-      if (file.name.slice(-3) !== 'zip') {
-        document.getElementById('warning').innerHTML = 'Select .zip file';
-        return;
-      } else {
-        document.getElementById('warning').innerHTML = '';
-        handleZipFile(file);
-      }
-    });
-  });
-};
-
-
-// ---
-// generated by coffee-script 1.9.2
-
+    }
+  }).addTo(map);
+}
