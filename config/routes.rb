@@ -3,6 +3,10 @@ Rails.application.routes.draw do
 
   get  '/cemeteries/cemetery_data', :defaults => { :format => 'json' }
   get  '/cemeteries/plots_data', :defaults => { :format => 'json' }
+  get  '/cemeteries/streets_data', :defaults => { :format => 'json' }
+  get  '/cemeteries/points_data', :defaults => { :format => 'json' }
+  get  '/cemeteries/sectors_data', :defaults => { :format => 'json' }
+
   get  '/cemeteries/list', to: 'cemeteries#list'
   get  '/home',       to: 'static_pages#home'
   get  '/help',       to: 'static_pages#help'

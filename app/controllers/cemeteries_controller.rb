@@ -13,6 +13,18 @@ class CemeteriesController < ApplicationController
     @plots = Plot.choose($cem_id)
   end
 
+  def streets_data
+    @streets = Street.choose($cem_id)
+  end
+
+  def sectors_data
+    @sectors = Sector.choose($cem_id)
+  end
+
+  def points_data
+    @points = Point.choose($cem_id)
+  end
+
   def show
     $cem_id = params[:id]
     @cemetery = Cemetery.find(params[:id])

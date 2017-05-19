@@ -14,7 +14,7 @@
   //
   $(document).on('ready page:load', function(event) {
 
-    var cemeteriesLayer, Stamen_Watercolor, baseMaps, drawControl, drawnItems, map, opencyclemap, osm, otm, overlayMaps, uploadPopup, measureControl, folderIcon;
+    var cemeteriesLayer, plotsLayer, streetsLayer, pointsLayer, sectorsLayer, Stamen_Watercolor, baseMaps, drawControl, drawnItems, map, opencyclemap, osm, otm, overlayMaps, uploadPopup, measureControl, folderIcon;
 
     map = L.map("map").setView([56.9558, 24.0991], 13);
 
@@ -50,8 +50,8 @@
     map.addLayer(drawnItems);
 
     var cemeteryStyle = {
-        "fillColor": "#6c9b6b",
-        "color": "black",
+        "fillColor": '#6c9b6b',
+        "color": 'black',
         "weight": 3,
         "fillOpacity": .5
     };
@@ -63,6 +63,37 @@
       "fillOpacity": 0.8
     };
 
+    var sectorStyle = {
+      "weight": 2,
+      "color": 'gray',
+      "fillColor": 'light-gray',
+      "fillOpacity": 0.1
+    };
+
+    var streetStyle2 = {
+      "weight": 5,
+      "color": 'white',
+      "fillOpacity": 0.95
+    };
+
+    var streetStyle4 = {
+      "weight": 4,
+      "color": 'white',
+      "fillOpacity": 0.95
+    };
+
+    var streetStyle5 = {
+      "weight": 1.5,
+      "color": 'white',
+      "fillOpacity": 0.95
+    };
+
+    var streetStyle6 = {
+      "weight": 1,
+      "color": 'white',
+      "fillOpacity": 0.95
+    };
+
     map.on('data:loading', function() {
       map.spin(true);
     });
@@ -71,11 +102,47 @@
       style: cemeteryStyle
     }).addTo(map);
 
+    sectorsLayer = new L.GeoJSON.AJAX("/cemeteries/sectors_data",{
+      style: sectorStyle,
+      onEachFeature: function (feature, layer) {
+        layer.bindPopup("Sector Nr: " + feature.properties.label);
+      }
+    }).addTo(map);
+
     plotsLayer = new L.GeoJSON.AJAX("/cemeteries/plots_data",{
       style: plotStyle,
       onEachFeature: function (feature, layer) {
-        layer.bindPopup(feature.properties.label);
-      },
+        layer.bindPopup("Plot Nr: " + feature.properties.label);
+      }
+    });
+
+    streetsLayer = new L.GeoJSON.AJAX("/cemeteries/streets_data", {
+      style: function (feature){
+        switch(feature.properties.kind){
+          case '2': return streetStyle2; break;
+          case '4': return streetStyle4; break;
+          case '5': return streetStyle5; break;
+          case '6': return streetStyle6; break;
+        }
+      }
+    });
+
+    map.on('overlayadd', function() {
+      if (map.hasLayer(cemeteriesLayer)) {
+        cemeteriesLayer.bringToBack();
+      }
+      if (map.hasLayer(sectorsLayer)) {
+        sectorsLayer.bringToFront();
+      }
+      if (map.hasLayer(streetsLayer)) {
+        streetsLayer.bringToFront();
+      }
+      if (map.hasLayer(plotsLayer)) {
+        plotsLayer.bringToFront();
+      }
+      if (map.hasLayer(drawnItems)) {
+        drawnItems.bringToFront();
+      }
     });
 
     baseMaps = {
@@ -86,6 +153,8 @@
     };
     overlayMaps = {
       "Cemetery": cemeteriesLayer,
+      "Sectors": sectorsLayer,
+      "Streets": streetsLayer,
       "Plots": plotsLayer,
       "Drawn items": drawnItems
     };
@@ -125,20 +194,28 @@
     });
 
     map.on('zoomend', function() {
-      if (map.getZoom() <19){
+      if (map.getZoom() < 19){
         if (map.hasLayer(plotsLayer)) {
           map.removeLayer(plotsLayer);
-        } else {
-          console.log("no plots layer active");
         }
-      }
+      };
       if (map.getZoom() >= 19){
         if (map.hasLayer(plotsLayer)){
-          console.log("layer already added");
+          console.log("plots layer already added");
         } else {
           map.addLayer(plotsLayer);
         }
+      };
+      if (map.getZoom() >= 18){
+        if (map.hasLayer(streetsLayer)){
+          console.log("streets layer already added");
+        } else {
+          map.addLayer(streetsLayer);
+        }
       }
+      else {
+        map.removeLayer(streetsLayer);
+      };
     });
 
     map.setView([<%= Cemetery.find(params[:id]).central_coordinates[:lat] %>,<%= Cemetery.find(params[:id]).central_coordinates[:lng] %>], 16);
@@ -256,7 +333,6 @@
         }
       }
     }).addTo(map);
-
   });
   </script>
 </body>
