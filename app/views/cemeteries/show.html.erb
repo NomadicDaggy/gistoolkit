@@ -94,6 +94,20 @@
       "fillOpacity": 0.95
     };
 
+    var coniferousIcon = L.icon({
+      iconUrl: '/assets/obj-icon-coniferous-tree.png',
+      iconSize:     [36, 18], // size of the icon
+      iconAnchor:   [0, 0], // point of the icon which will correspond to marker's location
+      popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
+    });
+
+    var deciduousIcon = L.icon({
+      iconUrl: '/assets/obj-icon-deciduous-tree.png',
+      iconSize:     [36, 18], // size of the icon
+      iconAnchor:   [0, 0], // point of the icon which will correspond to marker's location
+      popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
+    });
+
     map.on('data:loading', function() {
       map.spin(true);
     });
@@ -127,6 +141,15 @@
       }
     });
 
+    pointsLayer = new L.GeoJSON.AJAX("/cemeteries/points_data", {
+      pointToLayer: function(feature, latlng) {
+        switch(feature.properties.kind){
+          case 'coniferous_tree': return L.marker(latlng, {icon: coniferousIcon}); break;
+          case 'deciduous_tree': return L.marker(latlng, {icon: deciduousIcon}); break;
+        }
+      }
+    });
+
     map.on('overlayadd', function() {
       if (map.hasLayer(cemeteriesLayer)) {
         cemeteriesLayer.bringToBack();
@@ -139,6 +162,9 @@
       }
       if (map.hasLayer(plotsLayer)) {
         plotsLayer.bringToFront();
+      }
+      if (map.hasLayer(pointsLayer)) {
+        pointsLayer.bringToFront();
       }
       if (map.hasLayer(drawnItems)) {
         drawnItems.bringToFront();
@@ -156,6 +182,7 @@
       "Sectors": sectorsLayer,
       "Streets": streetsLayer,
       "Plots": plotsLayer,
+      "Points": pointsLayer,
       "Drawn items": drawnItems
     };
 
@@ -212,9 +239,18 @@
         } else {
           map.addLayer(streetsLayer);
         }
+      } else {
+        map.removeLayer(streetsLayer);
+      };
+      if (map.getZoom() >= 19){
+        if (map.hasLayer(pointsLayer)){
+          console.log("points layer already added");
+        } else {
+          map.addLayer(pointsLayer);
+        }
       }
       else {
-        map.removeLayer(streetsLayer);
+        map.removeLayer(pointsLayer);
       };
     });
 
