@@ -46,6 +46,9 @@
       attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
 
+    drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+
     var cemeteryStyle = {
         "fillColor": "#6c9b6b",
         "color": "black",
@@ -83,15 +86,13 @@
     };
     overlayMaps = {
       "Cemetery": cemeteriesLayer,
-      "Plots": plotsLayer
+      "Plots": plotsLayer,
+      "Drawn items": drawnItems
     };
 
     L.control.layers(baseMaps, overlayMaps).addTo(map);
 
     L.control.scale().addTo(map);
-
-    drawnItems = new L.FeatureGroup();
-    map.addLayer(drawnItems);
 
     measureControl = new L.Control.Measure({
       position: 'topright',
