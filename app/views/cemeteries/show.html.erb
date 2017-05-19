@@ -1,9 +1,20 @@
+<%# Cemetery name to aplication.html.erb for page title %>
 <% provide(:title, @cemetery.name) %>
+
+<%# Show Export button if user logged in %>
+<% if logged_in? %>
+    <li><a id="export" href="#">Export</a></li>
+  <% end %>
+
+<%# File module folder icon for later use in js script %>
+<% tag = image_tag("folder.svg", class: "icon", alt: "file icon") %>
 
 <body>
   <script>
+  //
   $(document).on('ready page:load', function(event) {
-    var cemeteriesLayer, Stamen_Watercolor, baseMaps, drawControl, drawnItems, map, opencyclemap, osm, otm, overlayMaps, uploadPopup, measureControl;
+
+    var cemeteriesLayer, Stamen_Watercolor, baseMaps, drawControl, drawnItems, map, opencyclemap, osm, otm, overlayMaps, uploadPopup, measureControl, folderIcon;
 
     map = L.map("map").setView([56.9558, 24.0991], 13);
 
@@ -35,7 +46,52 @@
       attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
 
+    var cemeteryStyle = {
+        "fillColor": "#6c9b6b",
+        "color": "black",
+        "weight": 3,
+        "fillOpacity": .5
+    };
+
+    var plotStyle = {
+      "weight": 1.5,
+      "fillColor" : '#704827',
+      "color": 'black',
+      "fillOpacity": 0.8
+    };
+
+    map.on('data:loading', function() {
+      map.spin(true);
+    });
+
+    cemeteriesLayer = new L.GeoJSON.AJAX("/cemeteries/cemetery_data",{
+      style: cemeteryStyle
+    }).addTo(map);
+
+    plotsLayer = new L.GeoJSON.AJAX("/cemeteries/plots_data",{
+      style: plotStyle,
+      onEachFeature: function (feature, layer) {
+        layer.bindPopup(feature.properties.label);
+      },
+    });
+
+    baseMaps = {
+      "OpenStreetMap": osm,
+      "OpenTopoMap": otm,
+      "Stamen watercolor": Stamen_Watercolor,
+      "No map": opencyclemap
+    };
+    overlayMaps = {
+      "Cemetery": cemeteriesLayer,
+      "Plots": plotsLayer
+    };
+
+    L.control.layers(baseMaps, overlayMaps).addTo(map);
+
     L.control.scale().addTo(map);
+
+    drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
 
     measureControl = new L.Control.Measure({
       position: 'topright',
@@ -45,29 +101,26 @@
       secondaryAreaUnit: 'hectares'
     }).addTo(map);
 
-    var cemeteryStyle = {
-        "fillColor": "#6c9b6b",
-        "color": "black",
-        "weight": 1,
-        "fillOpacity": 1
-    };
-
-    cemeteriesLayer = new L.GeoJSON.AJAX("/cemeteries/cemetery_data",{
-      style: cemeteryStyle
+    drawControl = new L.Control.Draw({
+      edit: {
+        featureGroup: drawnItems
+      },
+      draw: {
+        polygon: {
+          allowIntersection: false,
+          showArea: true
+        },
+        showMeasurements: true,
+        polyline: true,
+        circle: false,
+        rectangle: false,
+        imperial: false,
+        marker: true
+      }
     }).addTo(map);
 
-    var plotStyle = {
-      "weight":1,
-      "fillColor" :'#704827',
-      "color":'black',
-      "fillOpacity":1
-    };
-
-    plotsLayer = new L.GeoJSON.AJAX("/cemeteries/plots_data",{
-      style: plotStyle,
-      onEachFeature: function (feature, layer) {
-        layer.bindPopup(feature.properties.label);
-      },
+    map.on('draw:created', function(e) {
+      drawnItems.addLayer(e.layer);
     });
 
     map.on('zoomend', function() {
@@ -97,22 +150,112 @@
       map.setZoom(19)
     }).addTo(map);
 
-    baseMaps = {
-      "OpenStreetMap": osm,
-      "OpenTopoMap": otm,
-      "Stamen watercolor": Stamen_Watercolor,
-      "No map": opencyclemap
-    };
-    overlayMaps = {
-      "Cemetery": cemeteriesLayer,
-      "Plots": plotsLayer
+    // Truncate value based on number of decimals
+    var _round = function(num, len) {
+        return Math.round(num*(Math.pow(10, len)))/(Math.pow(10, len));
     };
 
-    L.control.layers(baseMaps, overlayMaps).addTo(map);
+    // Helper method to format LatLng object (x.xxxxxx, y.yyyyyy)
+    var strLatLng = function(latlng) {
+        return "("+_round(latlng.lat, 6)+", "+_round(latlng.lng, 6)+")";
+    };
 
-    map.on('data:loading', function() {
-      map.spin(true);
+    // Generate popup content based on layer type
+    // - Returns HTML string, or null if unknown object
+    var getPopupContent = function(layer) {
+        // Marker - add lat/long
+        if (layer instanceof L.Marker) {
+            return strLatLng(layer.getLatLng());
+        // Polygon - area
+        } else if (layer instanceof L.Polygon) {
+            var latlngs = layer._defaultShape ? layer._defaultShape() : layer.getLatLngs(),
+                area = L.GeometryUtil.geodesicArea(latlngs);
+            return "Area: "+L.GeometryUtil.readableArea(area, true);
+        // Polyline - distance
+        } else if (layer instanceof L.Polyline) {
+            var latlngs = layer._defaultShape ? layer._defaultShape() : layer.getLatLngs(),
+                distance = 0;
+            if (latlngs.length < 2) {
+                return "Distance: N/A";
+            } else {
+                for (var i = 0; i < latlngs.length-1; i++) {
+                    distance += latlngs[i].distanceTo(latlngs[i+1]);
+                }
+                return "Distance: "+_round(distance, 2)+" m";
+            }
+        }
+        return null;
+    };
+
+    // Object created - bind popup to layer, add to feature group
+    map.on(L.Draw.Event.CREATED, function(event) {
+        var layer = event.layer;
+        var content = getPopupContent(layer);
+        if (content !== null) {
+            layer.bindPopup(content);
+        }
+        drawnItems.addLayer(layer);
     });
+
+    // Object(s) edited - update popups
+    map.on(L.Draw.Event.EDITED, function(event) {
+        var layers = event.layers,
+            content = null;
+        layers.eachLayer(function(layer) {
+            content = getPopupContent(layer);
+            if (content !== null) {
+                layer.setPopupContent(content);
+            }
+        });
+    });
+
+    document.getElementById('export').onclick = function(e) {
+      // Extract GeoJson from featureGroup
+      var data = drawnItems.toGeoJSON();
+
+      // Stringify the GeoJson
+      var convertedData = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+
+      // Find out desired filename
+      var filename = prompt("Filename for exported geodata: ");
+
+      if (filename) {
+        // Create export
+        document.getElementById('export').setAttribute('href', 'data:' + convertedData);
+        document.getElementById('export').setAttribute('download', filename + '.geojson');
+      }
+      else {
+        alert("Filename can't be empty!");
+      }
+    }
+
+    var fileLayerStyle = {
+      "weight":1,
+      "fillColor" :'#704827',
+      "color":'black',
+      "fillOpacity":1
+    };
+
+    folderIcon = '<%= tag %>';
+    L.Control.FileLayerLoad.LABEL = folderIcon;
+    L.Control.fileLayerLoad({
+      fitBounds: true,
+      formats: [
+            '.geojson',
+            '.kml',
+            '.json'
+        ],
+      layerOptions: {
+        style: fileLayerStyle,
+        pointToLayer: function (data, latlng) {
+          return L.circleMarker(
+          latlng,
+          { style: fileLayerStyle }
+          );
+        }
+      }
+    }).addTo(map);
+
   });
   </script>
 </body>

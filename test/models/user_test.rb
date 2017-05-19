@@ -37,8 +37,23 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
 
+  test "password should be present" do
+    @user.password = @user.password_confirmation = "     "
+    assert_not @user.valid?
+  end
+
   test "name should not be too long" do
-    @user.name = "a" * 51
+    @user.name = "c" * 51
+    assert_not @user.valid?
+  end
+
+  test "name should not be too short" do
+    @user.name = "dd"
+    assert_not @user.valid?
+  end
+
+  test  "email should not be too long" do
+    @user.email = ("a" * 260) + "@gov.eu"
     assert_not @user.valid?
   end
 
@@ -74,8 +89,8 @@ class UserTest < ActiveSupport::TestCase
     assert_equal mixed_case_email.downcase, @user.reload.email
   end
 
-  test "password should be present (nonblank)" do
-    @user.password = @user.password_confirmation = " " * 6
+  test "password should have a maximum length" do
+    @user.password = @user.password_confirmation = "e" * 21
     assert_not @user.valid?
   end
 

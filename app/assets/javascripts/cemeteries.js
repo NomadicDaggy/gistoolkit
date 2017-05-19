@@ -72,3 +72,47 @@ function makeMapCemeteries() {
   }).addTo(map);
 };
 
+function fileControls() {
+  document.getElementById('export').onclick = function(e) {
+    // Extract GeoJson from featureGroup
+    var data = drawnItems.toGeoJSON();
+
+    // Stringify the GeoJson
+    var convertedData = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+
+    // Find out desired filename
+    var filename = prompt("Filename for exported geodata: ");
+
+    if (filename) {
+      // Create export
+      document.getElementById('export').setAttribute('href', 'data:' + convertedData);
+      document.getElementById('export').setAttribute('download', filename + '.geojson');
+    }
+  }
+
+  var fileLayerStyle = {
+    "weight":1,
+    "fillColor" :'#704827',
+    "color":'black',
+    "fillOpacity":1
+  };
+
+  L.Control.FileLayerLoad.LABEL = '<img class="icon" src="folder.svg" alt="file icon"/>';
+  L.Control.fileLayerLoad({
+    fitBounds: true,
+    formats: [
+          '.geojson',
+          '.kml',
+          '.json'
+      ],
+    layerOptions: {
+      style: fileLayerStyle,
+      pointToLayer: function (data, latlng) {
+        return L.circleMarker(
+        latlng,
+        { style: fileLayerStyle }
+        );
+      }
+    }
+  }).addTo(map);
+}
