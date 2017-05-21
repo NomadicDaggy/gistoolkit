@@ -1,10 +1,8 @@
 <%# Cemetery name to aplication.html.erb for page title %>
 <% provide(:title, @cemetery.name) %>
 
-<%# Show Export button if user logged in %>
-<% if logged_in? %>
-    <li><a id="export" href="#" title="Export drawn items to GeoJSON">Export</a></li>
-  <% end %>
+<%# Show Export button %>
+<li><a id="export" href="#" title="Export drawn items to GeoJSON">Export</a></li>
 
 <%# File module folder icon for later use in js script %>
 <% tag = image_tag("folder.svg", class: "icon", alt: "file icon") %>
