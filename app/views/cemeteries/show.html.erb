@@ -3,7 +3,7 @@
 
 <%# Show Export button if user logged in %>
 <% if logged_in? %>
-    <li><a id="export" href="#">Export</a></li>
+    <li><a id="export" href="#" title="Export drawn items to GeoJSON">Export</a></li>
   <% end %>
 
 <%# File module folder icon for later use in js script %>
@@ -151,23 +151,23 @@
     });
 
     map.on('overlayadd', function() {
-      if (map.hasLayer(cemeteriesLayer)) {
-        cemeteriesLayer.bringToBack();
-      }
-      if (map.hasLayer(streetsLayer)) {
-        streetsLayer.bringToFront();
-      }
-      if (map.hasLayer(sectorsLayer)) {
-        sectorsLayer.bringToFront();
-      }
-      if (map.hasLayer(plotsLayer)) {
-        plotsLayer.bringToFront();
+      if (map.hasLayer(drawnItems)) {
+        drawnItems.bringToBack();
       }
       if (map.hasLayer(pointsLayer)) {
-        pointsLayer.bringToFront();
+        pointsLayer.bringToBack();
       }
-      if (map.hasLayer(drawnItems)) {
-        drawnItems.bringToFront();
+      if (map.hasLayer(plotsLayer)) {
+        plotsLayer.bringToBack();
+      }
+      if (map.hasLayer(sectorsLayer)) {
+        sectorsLayer.bringToBack();
+      }
+      if (map.hasLayer(streetsLayer)) {
+        streetsLayer.bringToBack();
+      }
+      if (map.hasLayer(cemeteriesLayer)) {
+        cemeteriesLayer.bringToBack();
       }
     });
 
@@ -186,17 +186,7 @@
       "Drawn items": drawnItems
     };
 
-    L.control.layers(baseMaps, overlayMaps).addTo(map);
-
     L.control.scale().addTo(map);
-
-    measureControl = new L.Control.Measure({
-      position: 'topright',
-      primaryLengthUnit: 'meters',
-      secondaryLengthUnit: 'kilometers',
-      primaryAreaUnit: 'sqmeters',
-      secondaryAreaUnit: 'hectares'
-    }).addTo(map);
 
     drawControl = new L.Control.Draw({
       edit: {
@@ -344,15 +334,15 @@
     }
 
     var fileLayerStyle = {
-      "weight":1,
+      "weight":1.5,
       "fillColor" :'#704827',
       "color":'black',
-      "fillOpacity":1
+      "fillOpacity":0.7
     };
 
     folderIcon = '<%= tag %>';
     L.Control.FileLayerLoad.LABEL = folderIcon;
-    L.Control.fileLayerLoad({
+    var fileload = new L.Control.fileLayerLoad({
       fitBounds: true,
       formats: [
             '.geojson',
@@ -369,6 +359,22 @@
         }
       }
     }).addTo(map);
+
+    fileload.loader.on('data:loaded', function (e) {
+      // Add to map layer switcher
+      layerswitcher.addOverlay(e.layer, e.filename);
+    });
+
+    var layerswitcher = L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+    measureControl = new L.Control.Measure({
+      position: 'topright',
+      primaryLengthUnit: 'meters',
+      secondaryLengthUnit: 'kilometers',
+      primaryAreaUnit: 'sqmeters',
+      secondaryAreaUnit: 'hectares'
+    }).addTo(map);
+
   });
   </script>
 </body>

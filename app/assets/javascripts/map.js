@@ -1,5 +1,5 @@
 // Global variables
-var map, drawControl, drawnItems;
+var map, drawControl, drawnItems, layerswitcher;
 
 function initMap() {
   var Stamen_Watercolor, baseMaps, opencyclemap, osm, otm, overlayMaps, uploadPopup, measureControl;
@@ -41,7 +41,8 @@ function initMap() {
   overlayMaps = {
     "Drawn items": drawnItems
   };
-  L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+  layerswitcher = L.control.layers(baseMaps, overlayMaps).addTo(map);
 
   L.control.scale().addTo(map);
 
@@ -157,7 +158,7 @@ function fileControls() {
   };
 
   L.Control.FileLayerLoad.LABEL = '<img class="icon" src="folder.svg" alt="file icon"/>';
-  L.Control.fileLayerLoad({
+  var fileload = new L.Control.fileLayerLoad({
     fitBounds: true,
     formats: [
           '.geojson',
@@ -174,4 +175,9 @@ function fileControls() {
       }
     }
   }).addTo(map);
+
+  fileload.loader.on('data:loaded', function (e) {
+    // Add to map layer switcher
+    layerswitcher.addOverlay(e.layer, e.filename);
+  });
 }
