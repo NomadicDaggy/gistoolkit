@@ -70,7 +70,6 @@ CREATE TABLE cemeteries (
     name character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    address character varying,
     phone_number character varying,
     city character varying,
     region character varying,
@@ -95,39 +94,6 @@ CREATE SEQUENCE cemeteries_id_seq
 --
 
 ALTER SEQUENCE cemeteries_id_seq OWNED BY cemeteries.id;
-
-
---
--- Name: points; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE points (
-    id integer NOT NULL,
-    cemetery_id integer NOT NULL,
-    kind character varying,
-    geom geometry(Point,4326),
-    diameter double precision DEFAULT 0.0,
-    label character varying DEFAULT ''::character varying
-);
-
-
---
--- Name: other_points_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE other_points_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: other_points_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE other_points_id_seq OWNED BY points.id;
 
 
 --
@@ -173,70 +139,6 @@ CREATE TABLE schema_migrations (
 
 
 --
--- Name: sectors; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE sectors (
-    id integer NOT NULL,
-    cemetery_id integer NOT NULL,
-    geom geometry(Polygon,4326),
-    label character varying DEFAULT ''::character varying NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
-);
-
-
---
--- Name: sectors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE sectors_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: sectors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE sectors_id_seq OWNED BY sectors.id;
-
-
---
--- Name: streets; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE streets (
-    id integer NOT NULL,
-    cemetery_id integer NOT NULL,
-    kind character varying,
-    geom geometry(MultiLineString,4326)
-);
-
-
---
--- Name: streets_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE streets_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: streets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE streets_id_seq OWNED BY streets.id;
-
-
---
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -249,6 +151,9 @@ CREATE TABLE users (
     password_digest character varying,
     remember_digest character varying,
     admin boolean DEFAULT false,
+    activation_digest character varying,
+    activated boolean DEFAULT false,
+    activated_at timestamp without time zone,
     reset_digest character varying,
     reset_sent_at timestamp without time zone
 );
@@ -288,27 +193,6 @@ ALTER TABLE ONLY plots ALTER COLUMN id SET DEFAULT nextval('plots_id_seq'::regcl
 
 
 --
--- Name: points id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY points ALTER COLUMN id SET DEFAULT nextval('other_points_id_seq'::regclass);
-
-
---
--- Name: sectors id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY sectors ALTER COLUMN id SET DEFAULT nextval('sectors_id_seq'::regclass);
-
-
---
--- Name: streets id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY streets ALTER COLUMN id SET DEFAULT nextval('streets_id_seq'::regclass);
-
-
---
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -332,14 +216,6 @@ ALTER TABLE ONLY cemeteries
 
 
 --
--- Name: points other_points_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY points
-    ADD CONSTRAINT other_points_pkey PRIMARY KEY (id);
-
-
---
 -- Name: plots plots_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -353,22 +229,6 @@ ALTER TABLE ONLY plots
 
 ALTER TABLE ONLY schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
-
-
---
--- Name: sectors sectors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY sectors
-    ADD CONSTRAINT sectors_pkey PRIMARY KEY (id);
-
-
---
--- Name: streets streets_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY streets
-    ADD CONSTRAINT streets_pkey PRIMARY KEY (id);
 
 
 --
@@ -387,20 +247,6 @@ CREATE INDEX index_cemeteries_on_geom ON cemeteries USING gist (geom);
 
 
 --
--- Name: index_other_points_on_cemetery_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_other_points_on_cemetery_id ON points USING btree (cemetery_id);
-
-
---
--- Name: index_other_points_on_geom; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_other_points_on_geom ON points USING gist (geom);
-
-
---
 -- Name: index_plots_on_cemetery_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -412,34 +258,6 @@ CREATE INDEX index_plots_on_cemetery_id ON plots USING btree (cemetery_id);
 --
 
 CREATE INDEX index_plots_on_geom ON plots USING gist (geom);
-
-
---
--- Name: index_sectors_on_cemetery_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_sectors_on_cemetery_id ON sectors USING btree (cemetery_id);
-
-
---
--- Name: index_sectors_on_geom; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_sectors_on_geom ON sectors USING gist (geom);
-
-
---
--- Name: index_streets_on_cemetery_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_streets_on_cemetery_id ON streets USING btree (cemetery_id);
-
-
---
--- Name: index_streets_on_geom; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_streets_on_geom ON streets USING gist (geom);
 
 
 --

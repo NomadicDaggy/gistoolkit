@@ -22,6 +22,10 @@ class UsersIndexTest < ActionDispatch::IntegrationTest
     assert_difference 'User.count', -1 do
       delete user_path(@non_admin)
     end
+    assert_difference 'User.count', -1 do
+      delete user_path(@admin)
+    end
+    assert_redirected_to root_url
   end
 
   test "index as non-admin" do
