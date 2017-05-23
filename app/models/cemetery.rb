@@ -23,7 +23,7 @@ class Cemetery < ActiveRecord::Base
 
   def self.choose(cemetery_id)
     sql = <<-SQL.strip_heredoc
-      SELECT id, name, ST_AsGeoJSON(geom)::JSON AS geometry
+      SELECT id, name, address, phone_number, city, region, ST_AsGeoJSON(geom)::JSON AS geometry
       FROM cemeteries
       WHERE id = '#{cemetery_id}'
     SQL

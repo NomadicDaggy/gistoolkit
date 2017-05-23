@@ -13,11 +13,11 @@ class CemeteriesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_url
   end
 
-  test "should redirect index when not admin user" do
+  test "should redirect index when not admin user but logged in" do
     log_in_as(@other_user)
     get cemeteries_path
-    assert_equal "Please log in.", flash[:danger]
-    assert_redirected_to login_url
+    assert_equal "Cemeteries accessible only to admins. Contact site owner for access.", flash[:danger]
+    assert_redirected_to contact_url
   end
 
   test "should get cemeteries when admin user" do
@@ -32,11 +32,11 @@ class CemeteriesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to login_url
   end
 
-  test "should redirect show when not admin user" do
+  test "should redirect show when not admin user but logged in" do
     log_in_as(@other_user)
     get cemetery_path(@cemetery.id)
-    assert_equal "Please log in.", flash[:danger]
-    assert_redirected_to login_url
+    assert_equal "Cemeteries accessible only to admins. Contact site owner for access.", flash[:danger]
+    assert_redirected_to contact_url
   end
 
   test "should get cemetery when admin user" do

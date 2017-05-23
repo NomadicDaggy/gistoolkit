@@ -12,7 +12,7 @@
   //
   $(document).on('ready page:load', function(event) {
 
-    var cemeteriesLayer, plotsLayer, streetsLayer, pointsLayer, sectorsLayer, Stamen_Watercolor, baseMaps, drawControl, drawnItems, map, opencyclemap, osm, otm, overlayMaps, uploadPopup, measureControl, folderIcon;
+    var cemeteriesLayer, plotsLayer, streetsLayer, pointsLayer, sectorsLayer, Stamen_Watercolor, baseMaps, drawControl, drawnItems, map, opencyclemap, osm, otm, overlayMaps, uploadPopup, measureControl, folderIcon, cName, cId, cAddress, cPhone_number, cCity, cRegion, cemeteryPopup;
 
     map = L.map("map").setView([56.9558, 24.0991], 13);
 
@@ -94,14 +94,15 @@
 
     var coniferousIcon = L.icon({
       iconUrl: '/assets/obj-icon-coniferous-tree.png',
-      iconSize:     [36, 18], // size of the icon
+      iconSize:     [48, 24], // size of the icon
       iconAnchor:   [0, 0], // point of the icon which will correspond to marker's location
-      popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
+      popupAnchor:  [0, 0], // point from which the popup should open relative to the iconAnchor
+      opacity: 0.5
     });
 
     var deciduousIcon = L.icon({
       iconUrl: '/assets/obj-icon-deciduous-tree.png',
-      iconSize:     [36, 18], // size of the icon
+      iconSize:     [48, 24], // size of the icon
       iconAnchor:   [0, 0], // point of the icon which will correspond to marker's location
       popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
     });
@@ -111,7 +112,15 @@
     });
 
     cemeteriesLayer = new L.GeoJSON.AJAX("/cemeteries/cemetery_data",{
-      style: cemeteryStyle
+      style: cemeteryStyle,
+      onEachFeature: function (feature, layer) {
+        cemeteryPopup = L.popup().setContent(
+          "Name: " + feature.properties.name + "<br>" +
+          "Address: " + feature.properties.address + "<br>" +
+          "Phone number: " + feature.properties.phone_number + "<br>" +
+          '<%= link_to "Link to cemety", "https://www.cemety.lv/cemeteries/#{$cem_id}" %>'
+          );
+      }
     }).addTo(map);
 
     sectorsLayer = new L.GeoJSON.AJAX("/cemeteries/sectors_data",{
@@ -142,8 +151,8 @@
     pointsLayer = new L.GeoJSON.AJAX("/cemeteries/points_data", {
       pointToLayer: function(feature, latlng) {
         switch(feature.properties.kind){
-          case 'coniferous_tree': return L.marker(latlng, {icon: coniferousIcon}); break;
-          case 'deciduous_tree': return L.marker(latlng, {icon: deciduousIcon}); break;
+          case 'coniferous_tree': return L.marker(latlng, {icon: coniferousIcon, opacity:0.7}); break;
+          case 'deciduous_tree': return L.marker(latlng, {icon: deciduousIcon, opacity:0.7}); break;
         }
       }
     });
@@ -242,14 +251,23 @@
       };
     });
 
-    map.setView([<%= Cemetery.find(params[:id]).central_coordinates[:lat] %>,<%= Cemetery.find(params[:id]).central_coordinates[:lng] %>], 16);
+    var cLat = <%= Cemetery.find(params[:id]).central_coordinates[:lat] %>;
+    var cLng = <%= Cemetery.find(params[:id]).central_coordinates[:lng] %>;
+
+    map.setView([ cLat, cLng], 16);
 
     L.easyButton('fa-crosshairs', function(btn, map){
-      map.setView([<%= Cemetery.find(params[:id]).central_coordinates[:lat] %>,<%= Cemetery.find(params[:id]).central_coordinates[:lng] %>], 16)
+      map.setView([cLat, cLng], 16)
     }).addTo(map);
 
     L.easyButton('<span class="dagger">&dagger;</span>', function(btn, map){
       map.setZoom(19)
+    }).addTo(map);
+
+
+
+    L.easyButton('fa-info', function(btn, map){
+      cemeteryPopup.setLatLng([cLat, cLng]).openOn(map);
     }).addTo(map);
 
     // Truncate value based on number of decimals

@@ -34,9 +34,14 @@ class CemeteriesController < ApplicationController
 
     # Confirms an admin user.
     def admin_user
-      unless admin?
-        flash[:danger] = "Please log in."
-        redirect_to(login_url)
+      if logged_in? && !admin?
+        flash[:danger] = "Cemeteries accessible only to admins. Contact site owner for access."
+        redirect_to(contact_url)
+      else
+        unless admin?
+          flash[:danger] = "Please log in."
+          redirect_to(login_url)
+        end
       end
     end
 end
