@@ -1,3 +1,4 @@
+# Sagatavo JSON datus kapsētas slānim
  json.type "FeatureCollection"
  json.features @cemeteries do |cemetery|
   json.type "Feature"

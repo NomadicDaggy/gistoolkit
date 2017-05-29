@@ -1,23 +1,27 @@
-<%# Cemetery name to aplication.html.erb for page title %>
+<%# Kapsētas nosaukums -> applicaiton.html.erb priekš HTML title %>
 <% provide(:title, @cemetery.name) %>
 
-<%# Show Export button %>
+<%# Ekrānpoga failu eksportēšanai %>
 <li><a id="export" href="#" title="Export drawn items to GeoJSON">Export</a></li>
 
-<%# File module folder icon for later use in js script %>
+<%# Failu moduļa ekrānpogas ikona tālākai izmantošanai skriptā %>
 <% tag = image_tag("folder.svg", class: "icon", alt: "file icon") %>
 
 <body>
   <script>
-  //
+  // Leaflet prasība- kartes konfigurācija tiek sākta tikai, kad lapas ielāde pabeigta
   $(document).on('ready page:load', function(event) {
 
+    // Mainīgo deklarācijas
     var cemeteriesLayer, plotsLayer, streetsLayer, pointsLayer, sectorsLayer, Stamen_Watercolor, baseMaps, drawControl, drawnItems, map, opencyclemap, osm, otm, overlayMaps, uploadPopup, measureControl, folderIcon, cName, cId, cAddress, cPhone_number, cCity, cRegion, cemeteryPopup;
 
+    // Izveido kartes objektu ar skatu uz Rīgu un 13. pietuvinājuma līmeni
     map = L.map("map").setView([56.9558, 24.0991], 13);
 
+    // Uzstāda kartes maksimālo pietuvinājumu uz 24
     map.options.maxZoom = 24;
 
+    // Kartes pamatslāņu definīcijas
     osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxNativeZoom: 18,
       maxZoom: 24
@@ -44,9 +48,11 @@
       attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
 
+    // Zīmēto objektu slānis tiek izveidots un pievienots kartei
     drawnItems = new L.FeatureGroup();
     map.addLayer(drawnItems);
 
+    // Kapsētas slāņu vizuālā noformējuma definīcijas
     var cemeteryStyle = {
         "fillColor": '#6c9b6b',
         "color": 'black',
@@ -92,27 +98,37 @@
       "fillOpacity": 0.95
     };
 
+    // Skujkoka ikona
     var coniferousIcon = L.icon({
       iconUrl: '/assets/obj-icon-coniferous-tree.png',
-      iconSize:     [48, 24], // size of the icon
-      iconAnchor:   [0, 0], // point of the icon which will correspond to marker's location
-      popupAnchor:  [0, 0], // point from which the popup should open relative to the iconAnchor
+      iconSize:     [48, 24], // ikonas izmērs
+      iconAnchor:   [24, 24], // ikonas punkts, kurš tiks novietots attiecīgajās punkta koordinātās
+      popupAnchor:  [0, 0], // punkts relatīvi ikonas punktam, kur tiks novietots uznirstošais logs
+      opacity: 0.5 // ikonas caurspīdīgums
+    });
+
+    // Lapu koka ikona
+    var deciduousIcon = L.icon({
+      iconUrl: '/assets/obj-icon-deciduous-tree.png',
+      iconSize:     [48, 24],
+      iconAnchor:   [24, 24],
+      popupAnchor:  [0, 0],
       opacity: 0.5
     });
 
-    var deciduousIcon = L.icon({
-      iconUrl: '/assets/obj-icon-deciduous-tree.png',
-      iconSize:     [48, 24], // size of the icon
-      iconAnchor:   [0, 0], // point of the icon which will correspond to marker's location
-      popupAnchor:  [0, 0] // point from which the popup should open relative to the iconAnchor
-    });
-
+    // Kartes ielādes laikā attēlo aplīti
     map.on('data:loading', function() {
       map.spin(true);
     });
 
+    // AJAX pieprasījums, kas definē kapsētas slāni
     cemeteriesLayer = new L.GeoJSON.AJAX("/cemeteries/cemetery_data",{
-      style: cemeteryStyle,
+      style: {
+        "fillColor": '#6c9b6b',
+        "color": 'black',
+        "weight": 3,
+        "fillOpacity": .5
+        },
       onEachFeature: function (feature, layer) {
         cemeteryPopup = L.popup().setContent(
           "Name: " + feature.properties.name + "<br>" +
@@ -123,6 +139,7 @@
       }
     }).addTo(map);
 
+    // Sektoru slānis
     sectorsLayer = new L.GeoJSON.AJAX("/cemeteries/sectors_data",{
       style: sectorStyle,
       onEachFeature: function (feature, layer) {
@@ -130,6 +147,7 @@
       }
     }).addTo(map);
 
+    // Kapavietu slānis
     plotsLayer = new L.GeoJSON.AJAX("/cemeteries/plots_data",{
       style: plotStyle,
       onEachFeature: function (feature, layer) {
@@ -137,6 +155,7 @@
       }
     });
 
+    // Ielu slānis
     streetsLayer = new L.GeoJSON.AJAX("/cemeteries/streets_data", {
       style: function (feature){
         switch(feature.properties.kind){
@@ -148,6 +167,7 @@
       }
     });
 
+    // Punktu slānis
     pointsLayer = new L.GeoJSON.AJAX("/cemeteries/points_data", {
       pointToLayer: function(feature, latlng) {
         switch(feature.properties.kind){
@@ -157,6 +177,7 @@
       }
     });
 
+    // Katru reizi, kad tiek parādīts vai paslēpts kāds slānis (ne pamata), pareizi sarindo slāņus
     map.on('overlayadd', function() {
       if (map.hasLayer(drawnItems)) {
         drawnItems.bringToBack();
@@ -178,6 +199,7 @@
       }
     });
 
+    // Kartes slāņu nosaukumu sasaiste ar slāņus saturošajiem mainīgajiem
     baseMaps = {
       "OpenStreetMap": osm,
       "OpenTopoMap": otm,
@@ -193,8 +215,10 @@
       "Drawn items": drawnItems
     };
 
+    // Pievieno kartei mērogu
     L.control.scale().addTo(map);
 
+    // Pievieno kartei zīmēšanas kontroles
     drawControl = new L.Control.Draw({
       edit: {
         featureGroup: drawnItems
@@ -202,7 +226,11 @@
       draw: {
         polygon: {
           allowIntersection: false,
-          showArea: true
+          showArea: true,
+          shapeOptions: {
+            color: 'black',
+            weight: 4
+          }
         },
         showMeasurements: true,
         polyline: true,
@@ -213,10 +241,12 @@
       }
     }).addTo(map);
 
+    // Kolīdz pabeigta objekta zīmēšana, pievieno to kartei kā atsevišķu slāni
     map.on('draw:created', function(e) {
       drawnItems.addLayer(e.layer);
     });
 
+    // Atsevišķu kapsētu slāņu automātiska slēpšana, kad karte pārāk attālināta
     map.on('zoomend', function() {
       if (map.getZoom() < 19){
         if (map.hasLayer(plotsLayer)) {
@@ -251,47 +281,50 @@
       };
     });
 
+    // Kapsētas centrpunkta koordinātas no cemetery.rb
     var cLat = <%= Cemetery.find(params[:id]).central_coordinates[:lat] %>;
     var cLng = <%= Cemetery.find(params[:id]).central_coordinates[:lng] %>;
 
+    // Pēc kapsētas ielādes novieto skatu tās centrā 16. pietuvinājumā
     map.setView([ cLat, cLng], 16);
 
+    // Ekrānpoga kartes skata novietošanai uz kapsētas
     L.easyButton('fa-crosshairs', function(btn, map){
       map.setView([cLat, cLng], 16)
     }).addTo(map);
 
+    // Ekrānpoga kartes skata pietuvināšanai līdz kapsētu līmenim
     L.easyButton('<span class="dagger">&dagger;</span>', function(btn, map){
       map.setZoom(19)
     }).addTo(map);
 
-
-
+    // Ekrānpoga kapsētas informācijas uznirstošā loga attēlošanai
     L.easyButton('fa-info', function(btn, map){
       cemeteryPopup.setLatLng([cLat, cLng]).openOn(map);
     }).addTo(map);
 
-    // Truncate value based on number of decimals
+    // Palīgfunkcija skaitļu apaļošanai
     var _round = function(num, len) {
         return Math.round(num*(Math.pow(10, len)))/(Math.pow(10, len));
     };
 
-    // Helper method to format LatLng object (x.xxxxxx, y.yyyyyy)
+    // Palīgfunkcija, lai parādītu punkta koordinātas formātā (x.xxxxxx, y.yyyyyy)
     var strLatLng = function(latlng) {
         return "("+_round(latlng.lat, 6)+", "+_round(latlng.lng, 6)+")";
     };
 
-    // Generate popup content based on layer type
-    // - Returns HTML string, or null if unknown object
+    // Ģenerē uznirstošā loga saturu zīmētajiem objektiem atkarībā no objekta
+    // Atgriež HTML virkni vai NULL, ja nezināms objekts
     var getPopupContent = function(layer) {
-        // Marker - add lat/long
+        // Punkts - koordinātas EPSG:4326
         if (layer instanceof L.Marker) {
             return strLatLng(layer.getLatLng());
-        // Polygon - area
+        // Daudzstūris - platība kvadrātmetros un hektāros
         } else if (layer instanceof L.Polygon) {
             var latlngs = layer._defaultShape ? layer._defaultShape() : layer.getLatLngs(),
                 area = L.GeometryUtil.geodesicArea(latlngs);
             return "Area: "+L.GeometryUtil.readableArea(area, true);
-        // Polyline - distance
+        // Līnija - attālums metros un kilometros
         } else if (layer instanceof L.Polyline) {
             var latlngs = layer._defaultShape ? layer._defaultShape() : layer.getLatLngs(),
                 distance = 0;
@@ -307,7 +340,7 @@
         return null;
     };
 
-    // Object created - bind popup to layer, add to feature group
+    // Kad objekts izveidots, piesaista uznirstošo logu slānim
     map.on(L.Draw.Event.CREATED, function(event) {
         var layer = event.layer;
         var content = getPopupContent(layer);
@@ -317,7 +350,7 @@
         drawnItems.addLayer(layer);
     });
 
-    // Object(s) edited - update popups
+    // Kad objekts rediģēts, izmaina uznirstošā loga saturu
     map.on(L.Draw.Event.EDITED, function(event) {
         var layers = event.layers,
             content = null;
@@ -329,18 +362,19 @@
         });
     });
 
+    // Zīmēto objektu eksportēšana failā
     document.getElementById('export').onclick = function(e) {
-      // Extract GeoJson from featureGroup
+      //Iegūst GeoJSON datus
       var data = drawnItems.toGeoJSON();
 
-      // Stringify the GeoJson
+      // Savirknē GeoJSON datus
       var convertedData = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
 
-      // Find out desired filename
+      // No lietotāja uzzin vēlamo faila nosaukumu
       var filename = prompt("Filename for exported geodata: ");
 
       if (filename) {
-        // Create export
+        // Izveido lejupielādi
         document.getElementById('export').setAttribute('href', 'data:' + convertedData);
         document.getElementById('export').setAttribute('download', filename + '.geojson');
       }
@@ -349,6 +383,7 @@
       }
     }
 
+    // Failu slāņa stils
     var fileLayerStyle = {
       "weight":1.5,
       "fillColor" :'#704827',
@@ -356,6 +391,7 @@
       "fillOpacity":0.7
     };
 
+    // Failu moduļa konfigurācija
     folderIcon = '<%= tag %>';
     L.Control.FileLayerLoad.LABEL = folderIcon;
     var fileload = new L.Control.fileLayerLoad({
@@ -376,13 +412,13 @@
       }
     }).addTo(map);
 
+    // Pievieno failu slāni slāņu izvēlnē
     fileload.loader.on('data:loaded', function (e) {
-      // Add to map layer switcher
       layerswitcher.addOverlay(e.layer, e.filename);
     });
-
     var layerswitcher = L.control.layers(baseMaps, overlayMaps).addTo(map);
 
+    // Alternatīvs risinājums mērīšanai
     measureControl = new L.Control.Measure({
       position: 'topright',
       primaryLengthUnit: 'meters',
@@ -395,5 +431,4 @@
   </script>
 </body>
 
-<!-- A map will magically appear here -->
 <div id="map"></div>

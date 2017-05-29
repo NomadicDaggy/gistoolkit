@@ -61,7 +61,11 @@ function initMap() {
     draw: {
       polygon: {
         allowIntersection: false,
-        showArea: true
+        showArea: true,
+          shapeOptions: {
+            color: 'black',
+            weight: 4
+          }
       },
       polyline: true,
       circle: false,
