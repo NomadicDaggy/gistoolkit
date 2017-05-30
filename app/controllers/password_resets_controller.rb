@@ -1,11 +1,14 @@
 class PasswordResetsController < ApplicationController
+  # Executes methods before specified actions
   before_action :get_user,         only: [:edit, :update]
   before_action :valid_user,       only: [:edit, :update]
   before_action :check_expiration, only: [:edit, :update]
 
+  # Renders password_resets/new.html.erb
   def new
   end
 
+  # Sends password reset email if user found by e-mail
   def create
     @user = User.find_by(email: params[:password_reset][:email].downcase)
     if @user
@@ -19,6 +22,7 @@ class PasswordResetsController < ApplicationController
     end
   end
 
+  # Renders password_resets/edit.hrml.erb
   def edit
   end
 
