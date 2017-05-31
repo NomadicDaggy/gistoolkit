@@ -10,7 +10,6 @@ Rails.application.routes.draw do
   get  '/cemeteries/sectors_data',  :defaults => { :format => 'json' }
 
   # Manuāli piesaista maršrutus kontrolieru metodēm
-  get  '/home',            to: 'static_pages#home'
   get  '/help',            to: 'static_pages#help'
   get  '/info',            to: 'static_pages#info'
   get  '/contact',         to: 'static_pages#contact'
