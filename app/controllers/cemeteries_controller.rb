@@ -1,19 +1,19 @@
 class CemeteriesController < ApplicationController
-  # Execute action only if user admin
+  # Execute action only if user admin.
   before_action :admin_user, only: [:index, :show]
 
-  # Uses Rails built-in pagination to gather all cemeteries for display
+  # Uses gem "will-paginate" for pagination.
   def index
     @cemeteries = Cemetery.paginate(page: params[:page])
   end
 
   def show
-    # Global var to store current cemetery id
+    # Global var to store current cemetery id.
     $cem_id = params[:id]
     @cemetery = Cemetery.find(params[:id])
   end
 
-  # Selects raw map data from db
+  # Selects raw map data from db.
   def cemetery_data
     @cemeteries = Cemetery.choose($cem_id)
   end
@@ -36,15 +36,16 @@ class CemeteriesController < ApplicationController
 
   private
 
-    # Handles cemeteries access
-    # If user not logged in -> login view
-    # If user not admin     -> contact view
+    # Handles cemeteries access.
+    # If user not logged in -> login view;
+    # If user not admin     -> contact view.
     def admin_user
       if logged_in? && !admin?
         flash[:danger] = "Cemeteries accessible only to admins. Contact site owner for access."
         redirect_to(contact_url)
       else
         unless admin?
+          store_location
           flash[:danger] = "Please log in."
           redirect_to(login_url)
         end

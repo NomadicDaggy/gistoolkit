@@ -1,4 +1,6 @@
 class StaticPagesController < ApplicationController
+# Renders views under static_pages/...
+
   def home
   end
 

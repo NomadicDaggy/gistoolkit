@@ -16,7 +16,7 @@
 class Cemetery < ActiveRecord::Base
   has_many :plots
 
-  # Atlasa kontroliera pieprasītās kapsētas datus no datubāzes
+  # Atlasa kontroliera pieprasītās kapsētas datus no datubāzes.
   def self.choose(cemetery_id)
     sql = <<-SQL.strip_heredoc
       SELECT id, name, address, phone_number, city, region, ST_AsGeoJSON(geom)::JSON AS geometry
@@ -26,7 +26,7 @@ class Cemetery < ActiveRecord::Base
     @cemeteries = ActiveRecord::Base.connection.execute(sql)
   end
 
-  # Nosaka kapsētu ierobežojošā daudzstūra centrpunkta koordinātas
+  # Nosaka kapsētu ierobežojošā daudzstūra centrpunkta koordinātas.
   def central_coordinates
     sql = "SELECT ST_asgeojson(ST_Centroid(geom)) FROM cemeteries where id = #{self.id};"
     cursor = Cemetery.connection.execute(sql)

@@ -1,20 +1,25 @@
 class UsersController < ApplicationController
+  # Executes methods before specified actions.
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy]
   before_action :correct_user,   only: [:edit, :update]
   before_action :admin_user,     only: :destroy
 
+  # Gathers users for user list.
   def index
     @users = User.paginate(page: params[:page])
   end
 
+  # User list.
   def show
     @user = User.find(params[:id])
   end
 
+  # New user.
   def new
   	@user = User.new
   end
 
+  # First time login.
   def create
     @user = User.new(user_params)
     if @user.save
@@ -26,10 +31,13 @@ class UsersController < ApplicationController
     end
   end
 
+  # Edit user info.
   def edit
     @user = User.find(params[:id])
   end
 
+  # If the new info is valid updates all the attributes
+  # from the passed-in hash and saves the record.
   def update
     @user = User.find(params[:id])
     if @user.update_attributes(user_params)
@@ -40,6 +48,7 @@ class UsersController < ApplicationController
     end
   end
 
+  # Permanently deletes user.
   def destroy
     @user = User.find(params[:id])
     if @user == current_user
@@ -55,6 +64,7 @@ class UsersController < ApplicationController
 
   private
 
+    # Strong parameters
     def user_params
       params.require(:user).permit(:name, :email, :password,
                                    :password_confirmation)

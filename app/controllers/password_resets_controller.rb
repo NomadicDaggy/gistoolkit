@@ -1,5 +1,5 @@
 class PasswordResetsController < ApplicationController
-  # Executes methods before specified actions
+  # Executes methods before specified actions.
   before_action :get_user,         only: [:edit, :update]
   before_action :valid_user,       only: [:edit, :update]
   before_action :check_expiration, only: [:edit, :update]
@@ -8,7 +8,7 @@ class PasswordResetsController < ApplicationController
   def new
   end
 
-  # Sends password reset email if user found by e-mail
+  # Sends password reset email if user found by e-mail.
   def create
     @user = User.find_by(email: params[:password_reset][:email].downcase)
     if @user
@@ -26,6 +26,7 @@ class PasswordResetsController < ApplicationController
   def edit
   end
 
+  # If password eneterd correctly, log in user.
   def update
     if params[:user][:password].empty?
       @user.errors.add(:password, "can't be empty")
@@ -42,6 +43,7 @@ class PasswordResetsController < ApplicationController
 
   private
 
+    # Strong parameters- allows changes only to password and confirmation.
     def user_params
       params.require(:user).permit(:password, :password_confirmation)
     end
