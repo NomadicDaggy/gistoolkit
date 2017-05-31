@@ -3,3 +3,7 @@
 <p>
   If something is unclear, feel free to <%= link_to "Contact", contact_path %> me
 </p>
+<% if admin? %>
+  <%= image_tag "cemeteries_zoom_help.png", class: "help_image" %>
+  <br>
+<% end %>

@@ -230,11 +230,16 @@ input {
   font-size: 1.3em;
 }
 
+.help_image {
+  position: relative;
+  margin-bottom: 30px;
+  width: 80%;
+  height: 80%;
+  margin-left: 10%;
+}
+
 /* Bootstrap override */
 
 .navbar-nav > li > a {padding-top:10px !important; padding-bottom:10px !important;}
 
 .navbar {min-height:40px !important}
-
-/* Home page */
-
